@@ -35,6 +35,15 @@ contract ProdigiKill is Ownable {
 		Status status
 	);
 
+	modifier isOwner(uint256 id) {
+		Tasks memory task = getTaskById(id);
+		require(
+			task.userAddress == msg.sender,
+			"you are not the task publisher"
+		);
+		_;
+	}
+
 	constructor() Ownable() {}
 
 	function taskApply(
@@ -66,6 +75,13 @@ contract ProdigiKill is Ownable {
 
 		uid = uid + 1;
 	}
+
+	function getTaskById(uint256 id) public view returns (Tasks memory) {
+		Tasks memory task = prodigiUsers[id];
+		return task;
+	}
+
+	function renewApply(uint256 id) public payable isOwner(id) {}
 
 	receive() external payable {}
 
