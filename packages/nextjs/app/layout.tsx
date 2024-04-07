@@ -12,30 +12,21 @@ const imageUrl = `${baseUrl}/thumbnail.jpg`;
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Scaffold-ETH 2 App",
-    template: "%s | Scaffold-ETH 2",
+    default: "ProdigiKill",
+    template: "Scaffold-ETH 2",
   },
-  description: "Built with 🏗 Scaffold-ETH 2",
+  description: "ProdigiKill a self improvement platform",
   openGraph: {
     title: {
-      default: "Scaffold-ETH 2 App",
-      template: "%s | Scaffold-ETH 2",
+      default: "ProdigiKill",
+      template: "Scaffold-ETH 2",
     },
-    description: "Built with 🏗 Scaffold-ETH 2",
+    description: "ProdigiKill a self improvement platform",
     images: [
       {
         url: imageUrl,
       },
     ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    images: [imageUrl],
-    title: {
-      default: "Scaffold-ETH 2",
-      template: "%s | Scaffold-ETH 2",
-    },
-    description: "Built with 🏗 Scaffold-ETH 2",
   },
   icons: {
     icon: [{ url: "/favicon.png", sizes: "32x32", type: "image/png" }],
