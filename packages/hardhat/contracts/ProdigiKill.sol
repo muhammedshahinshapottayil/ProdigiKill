@@ -1,6 +1,5 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
-import "./Proposal.sol";
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
@@ -36,10 +35,11 @@ contract ProdigiKill is Ownable {
 		Status status
 	);
 
-	event Evt__Renew(
-		uint256 indexed id,
-		uint256 date,
-	);
+	event Evt__Renew(uint256 indexed id, uint256 date);
+
+	event Evt__Rate(uint256 indexed id, address indexed userAddress);
+
+	event Evt__Change__Status(uint256 indexed id, Status status);
 
 	modifier isOwner(uint256 id) {
 		Tasks memory task = getTaskById(id);
@@ -84,11 +84,26 @@ contract ProdigiKill is Ownable {
 		return task;
 	}
 
+	function applicationStatus(uint256 id, Status status) public onlyOwner {
+		if (Status.Accepted == status) {
+			prodigiUsers[id].status = Status.Accepted;
+		} else if (Status.Rejected == status) {
+			prodigiUsers[id].status = Status.Rejected;
+		} else if (Status.Completed == status) {
+			prodigiUsers[id].status = Status.Completed;
+		}
+		emit Evt__Change__Status(id, prodigiUsers[id].status);
+	}
+
+	function rateApplication(uint256 id) public {
+		emit Evt__Rate(id, msg.sender);
+	}
+
 	function renewApply(uint256 id, uint256 date) public payable isOwner(id) {
 		if (msg.value != 0.05 ether) revert Err__Renew();
-		Tasks task = getTaskById(id);
-		if (task.status != Status.Accepted) revert Err__Renew()
-		emit Evt__Renew(id,date);
+		Tasks memory task = getTaskById(id);
+		if (task.status != Status.Accepted) revert Err__Renew();
+		emit Evt__Renew(id, date);
 	}
 
 	receive() external payable {}
