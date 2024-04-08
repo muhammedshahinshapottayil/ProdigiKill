@@ -6,6 +6,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 
 error Err__Apply();
+error Err__Renew();
 
 contract ProdigiKill is Ownable {
 	enum Status {
@@ -35,6 +36,11 @@ contract ProdigiKill is Ownable {
 		Status status
 	);
 
+	event Evt__Renew(
+		uint256 indexed id,
+		uint256 date,
+	);
+
 	modifier isOwner(uint256 id) {
 		Tasks memory task = getTaskById(id);
 		require(
@@ -52,7 +58,6 @@ contract ProdigiKill is Ownable {
 		uint256 date
 	) public payable {
 		if (msg.value != 0.55 ether) revert Err__Apply();
-
 		uint256 finalDate = block.timestamp + (date * 1 days);
 		prodigiUsers.push(
 			Tasks({
@@ -63,7 +68,6 @@ contract ProdigiKill is Ownable {
 				status: Status.Pending
 			})
 		);
-
 		emit Evt__Applied(
 			uid,
 			msg.sender,
@@ -72,7 +76,6 @@ contract ProdigiKill is Ownable {
 			finalDate,
 			Status.Pending
 		);
-
 		uid = uid + 1;
 	}
 
@@ -81,7 +84,12 @@ contract ProdigiKill is Ownable {
 		return task;
 	}
 
-	function renewApply(uint256 id) public payable isOwner(id) {}
+	function renewApply(uint256 id, uint256 date) public payable isOwner(id) {
+		if (msg.value != 0.05 ether) revert Err__Renew();
+		Tasks task = getTaskById(id);
+		if (task.status != Status.Accepted) revert Err__Renew()
+		emit Evt__Renew(id,date);
+	}
 
 	receive() external payable {}
 
