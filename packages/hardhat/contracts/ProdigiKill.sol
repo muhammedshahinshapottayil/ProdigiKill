@@ -6,12 +6,18 @@ import "hardhat/console.sol";
 
 error Err__Apply();
 error Err__Renew();
+error Err__Renew__Acceptance(uint256 id);
+error Err__Not__Rejected(uint256 id);
+error Err__Transaction__Failed(address add);
+error Err__Not__Completed(uint256 id);
+error Err__Not__Accepted(uint256 id);
 
 contract ProdigiKill is Ownable {
 	enum Status {
 		Pending,
 		Accepted,
 		Rejected,
+		INCompleted,
 		Completed
 	}
 
@@ -35,18 +41,31 @@ contract ProdigiKill is Ownable {
 		Status status
 	);
 
-	event Evt__Renew(uint256 indexed id, uint256 date);
+	event Evt__Renew(uint256 indexed id, string delayReason, uint256 date);
+
+	event Evt__Renew__Accepted(uint256 indexed id, uint256 date);
 
 	event Evt__Rate(uint256 indexed id, address indexed userAddress);
+
+	event Evt__Renew__Rate(uint256 indexed id, address indexed userAddress);
+
+	event Evt__Submit__Proof(
+		uint256 indexed id,
+		address indexed userAddress,
+		string proof
+	);
 
 	event Evt__Change__Status(uint256 indexed id, Status status);
 
 	modifier isOwner(uint256 id) {
 		Tasks memory task = getTaskById(id);
-		require(
-			task.userAddress == msg.sender,
-			"you are not the task publisher"
-		);
+		require(task.userAddress == msg.sender, "you are not the task owner");
+		_;
+	}
+
+	modifier notOwner(uint256 id) {
+		Tasks memory task = getTaskById(id);
+		require(task.userAddress != msg.sender, "you are the task owner");
 		_;
 	}
 
@@ -79,6 +98,30 @@ contract ProdigiKill is Ownable {
 		uid = uid + 1;
 	}
 
+	function withdrawCollateral(uint256 id) public isOwner(id) {
+		Tasks memory task = getTaskById(id);
+		if (task.status != Status.Rejected) revert Err__Not__Rejected(id);
+		(bool success, ) = payable(address(msg.sender)).call{
+			value: 0.55 ether
+		}("");
+		if (!success) revert Err__Transaction__Failed(msg.sender);
+	}
+
+	function submitProof(uint256 id, string memory proof) public isOwner(id) {
+		Tasks memory task = getTaskById(id);
+		if (task.status != Status.Accepted) revert Err__Not__Accepted(id);
+		emit Evt__Submit__Proof(id, msg.sender, proof);
+	}
+
+	function withdrawReward(uint256 id) public isOwner(id) {
+		Tasks memory task = getTaskById(id);
+		if (task.status != Status.Completed) revert Err__Not__Completed(id);
+		(bool success, ) = payable(address(msg.sender)).call{
+			value: 0.6 ether
+		}("");
+		if (!success) revert Err__Transaction__Failed(msg.sender);
+	}
+
 	function getTaskById(uint256 id) public view returns (Tasks memory) {
 		Tasks memory task = prodigiUsers[id];
 		return task;
@@ -91,19 +134,38 @@ contract ProdigiKill is Ownable {
 			prodigiUsers[id].status = Status.Rejected;
 		} else if (Status.Completed == status) {
 			prodigiUsers[id].status = Status.Completed;
+		} else if (Status.INCompleted == status) {
+			prodigiUsers[id].status = Status.INCompleted;
 		}
+
 		emit Evt__Change__Status(id, prodigiUsers[id].status);
 	}
 
-	function rateApplication(uint256 id) public {
+	function rateApplication(uint256 id) public notOwner(id) {
 		emit Evt__Rate(id, msg.sender);
 	}
 
-	function renewApply(uint256 id, uint256 date) public payable isOwner(id) {
+	function rateRenewApplication(uint256 id) public notOwner(id) {
+		emit Evt__Renew__Rate(id, msg.sender);
+	}
+
+	function renewApplicationAccept(uint256 id, uint256 date) public onlyOwner {
+		if (prodigiUsers[id].status != Status.Accepted)
+			revert Err__Renew__Acceptance(id);
+
+		prodigiUsers[id].date = date;
+		emit Evt__Renew__Accepted(id, date);
+	}
+
+	function renewApply(
+		uint256 id,
+		string memory delayReason,
+		uint256 date
+	) public payable isOwner(id) {
 		if (msg.value != 0.05 ether) revert Err__Renew();
 		Tasks memory task = getTaskById(id);
 		if (task.status != Status.Accepted) revert Err__Renew();
-		emit Evt__Renew(id, date);
+		emit Evt__Renew(id, delayReason, date);
 	}
 
 	receive() external payable {}
