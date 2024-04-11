@@ -204,7 +204,9 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		emit Evt__Submit__Proof(id, msg.sender, proof);
 	}
 
-	function rateCompletedProof(uint256 id) public notOwner(id) isBlackListed isAccepted(id) {
+	function rateCompletedProof(
+		uint256 id
+	) public notOwner(id) isBlackListed isAccepted(id) {
 		emit Evt__Completed__Proof(id, msg.sender);
 	}
 
@@ -261,7 +263,9 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		}
 	}
 
-	function rateApplication(uint256 id) public notOwner(id) isBlackListed isAccepted(id) {
+	function rateApplication(
+		uint256 id
+	) public notOwner(id) isBlackListed isAccepted(id) {
 		emit Evt__Rate(id, msg.sender);
 	}
 
@@ -303,8 +307,8 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 			userAddress: msg.sender,
 			title: title
 		});
-		emit Evt__Proposal__Idea(s_ideaId, msg.sender, title, details);
 		s_ideaId += 1;
+		emit Evt__Proposal__Idea(s_ideaId, msg.sender, title, details);
 	}
 
 	function rateProposedIdea(uint256 id) public isBlackListed {
@@ -316,14 +320,18 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		if (!success) revert Err__Transaction__Failed(addr);
 	}
 
+	function getIdeaById(uint256 id) public view returns (Ideas memory) {
+		Ideas memory idea = s_ideas[id];
+		return idea;
+	}
+
 	function winnerOfIdea(uint256 id) public onlyOwner nonReentrant {
-		(bool success, ) = payable(address(s_ideas[id].userAddress)).call{
+		Ideas memory idea = getIdeaById(id);
+		(bool success, ) = payable(address(idea.userAddress)).call{
 			value: 0.1 ether
 		}("");
-		if (!success) revert Err__Transaction__Failed(s_ideas[id].userAddress);
-		emit Evt__Winner__of__Idea(id, s_ideas[id].userAddress);
-		s_ideas = new Ideas[](0);
-		s_ideaId = 0;
+		if (!success) revert Err__Transaction__Failed(idea.userAddress);
+		emit Evt__Winner__of__Idea(id, idea.userAddress);
 	}
 
 	function getOwner() public view returns (address) {
