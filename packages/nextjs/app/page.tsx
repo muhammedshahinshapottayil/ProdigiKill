@@ -12,7 +12,7 @@ const Home: NextPage = () => {
     <>
 
      <div>
-      
+      Lets start
      </div>
     </>
   );
