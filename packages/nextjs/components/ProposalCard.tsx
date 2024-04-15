@@ -9,7 +9,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ title, description }) => {
   const handleLike = () => {
     setIsLiked(!isLiked);
   };
-
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between min-h-[200px] relative">
       <div>
@@ -17,6 +16,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({ title, description }) => {
         <p className="text-gray-600 line-clamp-3">{description}</p>
       </div>
       <button
+        data-tip="Like"
+        data-for="like-button-tooltip"
         className={`text-2xl ${
           isLiked ? "text-red-500" : "text-gray-400"
         } hover:text-red-500 absolute bottom-4 right-4`}

@@ -2,6 +2,9 @@ export type Tuple<T, MaxLength extends number = 10, Current extends T[] = []> = 
   ? Current
   : Current | Tuple<T, MaxLength, [T, ...Current]>;
 export interface ProposalCardProps {
+  id: string;
+  userAddress: string;
   title: string;
   description: string;
+  date: string;
 }

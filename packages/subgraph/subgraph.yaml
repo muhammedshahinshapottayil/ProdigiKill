@@ -1,26 +1,31 @@
 specVersion: 0.0.4
-description: Greetings
+description: ProdigiKill
 repository: https://github.com/scaffold-eth/se-2/packages/subgraph/
 schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: ProdigiKill
     network: localhost
     source:
-      abi: YourContract
+      abi: ProdigiKill
       address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - Greeting
-        - Sender
+        - Proposal
+        - ProposalRating
+        - RenewRating
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: ProdigiKill
+          file: ./abis/localhost_ProdigiKill.json
       eventHandlers:
-        - event: GreetingChange(indexed address,string,bool,uint256)
-          handler: handleGreetingChange
+        - event: Evt__Applied(indexed uint256,indexed address,string,string,uint256,uint8)
+          handler: handleProposalCreate
+        - event: Evt__Rate__Proposed__Idea(indexed uint256,indexed address)
+          handler: handleProposalRating
+        - event: Evt__Renew__Rate(indexed uint256,indexed address)
+          handler: handleRenewRating
       file: ./src/mapping.ts

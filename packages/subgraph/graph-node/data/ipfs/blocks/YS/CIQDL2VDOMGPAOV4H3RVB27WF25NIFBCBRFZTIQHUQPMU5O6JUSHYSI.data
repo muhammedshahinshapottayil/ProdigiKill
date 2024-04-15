@@ -1,0 +1,33 @@
+
+‡dataSources:
+  - kind: ethereum/contract
+    mapping:
+      abis:
+        - file:
+            /: /ipfs/QmSLVN2xtdh9uyQznnaER7DNT7rwhJXiSEshhHePd8LbK9
+          name: ProdigiKill
+      apiVersion: 0.0.6
+      entities:
+        - Greeting
+        - Sender
+      eventHandlers:
+        - event: >-
+            Evt__Applied(indexed uint256,indexed
+            address,string,string,uint256,uint8)
+          handler: handleProposalCreate
+      file:
+        /: /ipfs/QmbGKhhvSsNPyaVgC3imBcChsLTX49yRh3oq6BJGKrmJp2
+      kind: ethereum/events
+      language: wasm/assemblyscript
+    name: ProdigiKill
+    network: localhost
+    source:
+      abi: ProdigiKill
+      address: '0x5FbDB2315678afecb367f032d93F642f64180aa3'
+description: ProdigiKill
+repository: 'https://github.com/scaffold-eth/se-2/packages/subgraph/'
+schema:
+  file:
+    /: /ipfs/QmcVrmDsx9aLnMGQkJD295PoJWDzi6Uw2rYjGmtws4GtVG
+specVersion: 0.0.4
+‡

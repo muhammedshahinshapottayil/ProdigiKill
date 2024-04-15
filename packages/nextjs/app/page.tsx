@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 const Landing = () => {
@@ -13,7 +14,7 @@ const Landing = () => {
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto flex items-center justify-center">
           <div className="max-w-md rounded-lg shadow-lg overflow-hidden flex-1">
-            <img src="./banner.png" alt="Deadline Driven Platform" className="w-full h-full object-cover" />
+            <Image src="./banner.png" alt="Deadline Driven Platform" className="w-full h-full object-cover" />
           </div>
           <div className="max-w-md ml-16 flex-1">
             <h2 className="text-3xl font-bold mb-6">How it Works</h2>
@@ -28,21 +29,21 @@ const Landing = () => {
               <li>
                 <h3 className="font-bold text-xl mb-2">Commit with Collateral</h3>
                 <p>
-                  To ensure you stay accountable, you'll need to deposit a small collateral of 0.5 ETH. This acts as
+                  To ensure you stay accountable, you will need to deposit a small collateral of 0.5 ETH. This acts as
                   skin in the game.
                 </p>
               </li>
               <li>
                 <h3 className="font-bold text-xl mb-2">Earn Rewards</h3>
                 <p>
-                  Complete your task on time and you'll get your collateral back, plus earn extra ETH as a reward. The
+                  Complete your task on time and you will get your collateral back, plus earn extra ETH as a reward. The
                   faster you finish, the more you earn!
                 </p>
               </li>
               <li>
                 <h3 className="font-bold text-xl mb-2">Renew if Needed</h3>
                 <p>
-                  If you need more time, you can renew your deadline for a small fee. But miss the deadline and you'll
+                  If you need more time, you can renew your deadline for a small fee. But miss the deadline and you will
                   forfeit the collateral.
                 </p>
               </li>
@@ -92,7 +93,7 @@ const Landing = () => {
             towards a more productive and fulfilled life.
           </p>
           <Link
-            href="/signup"
+            href="/home"
             className="inline-block bg-white text-blue-800 font-bold py-4 px-8 rounded-md hover:bg-blue-800 hover:text-white transition-colors"
           >
             Get Started

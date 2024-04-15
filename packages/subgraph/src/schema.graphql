@@ -1,17 +1,47 @@
-type Greeting @entity {
+type Proposal @entity {
   id: ID!
-  sender: Sender!
-  greeting: String!
-  premium: Boolean
-  value: BigInt
+  userAddress: Bytes!
+  title: String!
+  details: String!
   createdAt: BigInt!
+  finalDate: BigInt!
+  withdrawal: Boolean!
+  status: Int!
   transactionHash: String!
+  updatedAt: BigInt
+}
+
+type ProposalRating @entity {
+  id: ID!
+  ProposalID: BigInt!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type RenewRating @entity {
+  id: ID!
+  ProposalID: BigInt!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type RequestRenewal @entity {
+  id: ID!
+  ProposalID: BigInt!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type Sender @entity {
   id: ID!
   address: Bytes!
-  greetings: [Greeting!] @derivedFrom(field: "sender")
+  # greetings: [ID!] @derivedFrom(field: "id")
   createdAt: BigInt!
   greetingCount: BigInt!
 }
