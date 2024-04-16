@@ -14,7 +14,13 @@ const Landing = () => {
       <section className="py-20 px-4">
         <div className="max-w-5xl mx-auto flex items-center justify-center">
           <div className="max-w-md rounded-lg shadow-lg overflow-hidden flex-1">
-            <Image src="./banner.png" alt="Deadline Driven Platform" className="w-full h-full object-cover" />
+            <Image
+              width={100}
+              height={100}
+              src="/banner.png"
+              alt="Deadline Driven Platform"
+              className="w-full h-full object-cover"
+            />
           </div>
           <div className="max-w-md ml-16 flex-1">
             <h2 className="text-3xl font-bold mb-6">How it Works</h2>

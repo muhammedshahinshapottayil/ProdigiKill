@@ -63,11 +63,17 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		Status status
 	);
 
-	event Evt__Renew(uint256 indexed id, string delayReason, uint256 date);
+	event Evt__Rate(uint256 indexed id, address indexed userAddress);
+
+	event Evt__Renew(
+		uint256 indexed id,
+		address indexed userAddress,
+		string delayReason,
+		uint256 date,
+		Status status
+	);
 
 	event Evt__Renew__Accepted(uint256 indexed id, uint256 date);
-
-	event Evt__Rate(uint256 indexed id, address indexed userAddress);
 
 	event Evt__Renew__Rate(uint256 indexed id, address indexed userAddress);
 
@@ -144,6 +150,12 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		_;
 	}
 
+	modifier isPending(uint256 id) {
+		Tasks memory task = getTaskById(id);
+		require(task.status == Status.Pending, "something went wrong");
+		_;
+	}
+
 	constructor() Ownable() {
 		s_feeDetails = FeeDetails({
 			lastMonthAmount: 0,
@@ -179,6 +191,29 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 			Status.Pending
 		);
 		s_uid = s_uid + 1;
+	}
+
+	function rateApplication(
+		uint256 id
+	) public notOwner(id) isBlackListed isPending(id) {
+		emit Evt__Rate(id, msg.sender);
+	}
+
+	function renewApply(
+		uint256 id,
+		string memory delayReason,
+		uint256 date
+	) public payable isOwner(id) isBlackListed {
+		if (msg.value != 0.05 ether) revert Err__Renew();
+		Tasks memory task = getTaskById(id);
+		if (task.status != Status.Accepted) revert Err__Renew();
+		emit Evt__Renew(id, msg.sender, delayReason, date, Status.Pending);
+	}
+
+	function rateRenewApplication(
+		uint256 id
+	) public notOwner(id) isBlackListed isPending(id) {
+		emit Evt__Renew__Rate(id, msg.sender);
 	}
 
 	function withdrawCollateral(
@@ -263,34 +298,11 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		}
 	}
 
-	function rateApplication(
-		uint256 id
-	) public notOwner(id) isBlackListed isAccepted(id) {
-		emit Evt__Rate(id, msg.sender);
-	}
-
-	function rateRenewApplication(
-		uint256 id
-	) public notOwner(id) isBlackListed isAccepted(id) {
-		emit Evt__Renew__Rate(id, msg.sender);
-	}
-
 	function renewApplicationAccept(uint256 id, uint256 date) public onlyOwner {
 		Tasks memory task = getTaskById(id);
 		if (task.status != Status.Accepted) revert Err__Renew__Acceptance(id);
 		s_prodigiUsers[id].date = date;
 		emit Evt__Renew__Accepted(id, date);
-	}
-
-	function renewApply(
-		uint256 id,
-		string memory delayReason,
-		uint256 date
-	) public payable isOwner(id) isBlackListed {
-		if (msg.value != 0.05 ether) revert Err__Renew();
-		Tasks memory task = getTaskById(id);
-		if (task.status != Status.Accepted) revert Err__Renew();
-		emit Evt__Renew(id, delayReason, date);
 	}
 
 	function addToBlackList(address addr) public onlyOwner {

@@ -282,6 +282,12 @@ const deployedContracts = {
               type: "uint256",
             },
             {
+              indexed: true,
+              internalType: "address",
+              name: "userAddress",
+              type: "address",
+            },
+            {
               indexed: false,
               internalType: "string",
               name: "delayReason",
@@ -292,6 +298,12 @@ const deployedContracts = {
               internalType: "uint256",
               name: "date",
               type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "enum ProdigiKill.Status",
+              name: "status",
+              type: "uint8",
             },
           ],
           name: "Evt__Renew",

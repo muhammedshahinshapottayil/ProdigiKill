@@ -27,14 +27,13 @@ type RequestRenewal @entity {
   userAddress: Bytes!
   reason: String!
   status: Int!
-  renewalRating: [RenewRating!]! @derivedFrom(field: "ProposalID")
   createdAt: BigInt!
   updatedAt: BigInt
 }
 
 type RenewRating @entity {
   id: ID!
-  ProposalID: RequestRenewal!
+  ProposalID: BigInt!
   userAddress: Bytes!
   status: Boolean!
   createdAt: BigInt!
