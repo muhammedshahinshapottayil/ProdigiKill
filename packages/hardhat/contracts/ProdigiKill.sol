@@ -263,22 +263,22 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		return task;
 	}
 
-	function applicationStatusChange(
-		uint256 id,
-		Status status
-	) public onlyOwner {
-		if (Status.Accepted == status) {
-			s_prodigiUsers[id].status = Status.Accepted;
-		} else if (Status.Rejected == status) {
-			s_prodigiUsers[id].status = Status.Rejected;
-		} else if (Status.Completed == status) {
-			s_prodigiUsers[id].status = Status.Completed;
-		} else if (Status.INCompleted == status) {
-			s_prodigiUsers[id].status = Status.INCompleted;
-		}
+	// function applicationStatusChange(
+	// 	uint256 id,
+	// 	Status status
+	// ) public onlyOwner {
+	// 	if (Status.Accepted == status) {
+	// 		s_prodigiUsers[id].status = Status.Accepted;
+	// 	} else if (Status.Rejected == status) {
+	// 		s_prodigiUsers[id].status = Status.Rejected;
+	// 	} else if (Status.Completed == status) {
+	// 		s_prodigiUsers[id].status = Status.Completed;
+	// 	} else if (Status.INCompleted == status) {
+	// 		s_prodigiUsers[id].status = Status.INCompleted;
+	// 	}
 
-		emit Evt__Change__Status(id, s_prodigiUsers[id].status);
-	}
+	// 	emit Evt__Change__Status(id, s_prodigiUsers[id].status);
+	// }
 
 	function applicationBulkStatusChange(
 		uint256[] memory arrId,
