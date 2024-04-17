@@ -261,8 +261,12 @@ export class Evt__Renew__Accepted__Params {
     return this._event.parameters[0].value.toBigInt();
   }
 
+  get status(): i32 {
+    return this._event.parameters[1].value.toI32();
+  }
+
   get date(): BigInt {
-    return this._event.parameters[1].value.toBigInt();
+    return this._event.parameters[2].value.toBigInt();
   }
 }
 
@@ -288,6 +292,28 @@ export class Evt__Renew__Rate__Params {
   }
 }
 
+export class Evt__Renew__Rejected extends ethereum.Event {
+  get params(): Evt__Renew__Rejected__Params {
+    return new Evt__Renew__Rejected__Params(this);
+  }
+}
+
+export class Evt__Renew__Rejected__Params {
+  _event: Evt__Renew__Rejected;
+
+  constructor(event: Evt__Renew__Rejected) {
+    this._event = event;
+  }
+
+  get id(): BigInt {
+    return this._event.parameters[0].value.toBigInt();
+  }
+
+  get status(): i32 {
+    return this._event.parameters[1].value.toI32();
+  }
+}
+
 export class Evt__Submit__Proof extends ethereum.Event {
   get params(): Evt__Submit__Proof__Params {
     return new Evt__Submit__Proof__Params(this);
@@ -309,8 +335,12 @@ export class Evt__Submit__Proof__Params {
     return this._event.parameters[1].value.toAddress();
   }
 
+  get status(): i32 {
+    return this._event.parameters[2].value.toI32();
+  }
+
   get proof(): string {
-    return this._event.parameters[2].value.toString();
+    return this._event.parameters[3].value.toString();
   }
 }
 
@@ -652,40 +682,6 @@ export class ApplicationBulkStatusChangeCall__Outputs {
   }
 }
 
-export class ApplicationStatusChangeCall extends ethereum.Call {
-  get inputs(): ApplicationStatusChangeCall__Inputs {
-    return new ApplicationStatusChangeCall__Inputs(this);
-  }
-
-  get outputs(): ApplicationStatusChangeCall__Outputs {
-    return new ApplicationStatusChangeCall__Outputs(this);
-  }
-}
-
-export class ApplicationStatusChangeCall__Inputs {
-  _call: ApplicationStatusChangeCall;
-
-  constructor(call: ApplicationStatusChangeCall) {
-    this._call = call;
-  }
-
-  get id(): BigInt {
-    return this._call.inputValues[0].value.toBigInt();
-  }
-
-  get status(): i32 {
-    return this._call.inputValues[1].value.toI32();
-  }
-}
-
-export class ApplicationStatusChangeCall__Outputs {
-  _call: ApplicationStatusChangeCall;
-
-  constructor(call: ApplicationStatusChangeCall) {
-    this._call = call;
-  }
-}
-
 export class BestReviewerCall extends ethereum.Call {
   get inputs(): BestReviewerCall__Inputs {
     return new BestReviewerCall__Inputs(this);
@@ -892,6 +888,36 @@ export class RateRenewApplicationCall__Outputs {
   _call: RateRenewApplicationCall;
 
   constructor(call: RateRenewApplicationCall) {
+    this._call = call;
+  }
+}
+
+export class RejectRenewApplicationCall extends ethereum.Call {
+  get inputs(): RejectRenewApplicationCall__Inputs {
+    return new RejectRenewApplicationCall__Inputs(this);
+  }
+
+  get outputs(): RejectRenewApplicationCall__Outputs {
+    return new RejectRenewApplicationCall__Outputs(this);
+  }
+}
+
+export class RejectRenewApplicationCall__Inputs {
+  _call: RejectRenewApplicationCall;
+
+  constructor(call: RejectRenewApplicationCall) {
+    this._call = call;
+  }
+
+  get id(): BigInt {
+    return this._call.inputValues[0].value.toBigInt();
+  }
+}
+
+export class RejectRenewApplicationCall__Outputs {
+  _call: RejectRenewApplicationCall;
+
+  constructor(call: RejectRenewApplicationCall) {
     this._call = call;
   }
 }

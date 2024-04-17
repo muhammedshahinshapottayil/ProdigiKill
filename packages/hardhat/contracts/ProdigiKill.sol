@@ -73,24 +73,20 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		Status status
 	);
 
-	event Evt__Renew__Accepted(uint256 indexed id, uint256 date);
-
 	event Evt__Renew__Rate(uint256 indexed id, address indexed userAddress);
+
+	event Evt__Change__Status(uint256 indexed id, Status status);
+
+	event Evt__Renew__Accepted(uint256 indexed id, Status status, uint256 date);
+
+	event Evt__Renew__Rejected(uint256 indexed id, Status status);
 
 	event Evt__Submit__Proof(
 		uint256 indexed id,
 		address indexed userAddress,
+		Status status,
 		string proof
 	);
-
-	event Evt__Proposal__Idea(
-		uint256 indexed id,
-		address indexed userAddress,
-		string title,
-		string details
-	);
-
-	event Evt__Change__Status(uint256 indexed id, Status status);
 
 	event Evt__Completed__Proof(
 		uint256 indexed id,
@@ -107,6 +103,17 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		address indexed userAddress
 	);
 
+	event Evt__Black__Listed(address indexed userAddress, bool status);
+
+	event Evt__Donation(address indexed donor, uint256 value);
+
+	event Evt__Proposal__Idea(
+		uint256 indexed id,
+		address indexed userAddress,
+		string title,
+		string details
+	);
+
 	event Evt__Rate__Proposed__Idea(
 		uint256 indexed id,
 		address indexed userAddress
@@ -116,10 +123,6 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		uint256 indexed id,
 		address indexed userAddress
 	);
-
-	event Evt__Black__Listed(address userAddress, bool status);
-
-	event Evt__Donation(address donor, uint256 value);
 
 	modifier isBlackListed() {
 		require(blackList[msg.sender] == false, "Sorry you are black listed");
@@ -233,10 +236,10 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 	function submitProof(
 		uint256 id,
 		string memory proof
-	) public isOwner(id) isBlackListed {
+	) public isOwner(id) isBlackListed isAccepted(id) {
 		Tasks memory task = getTaskById(id);
 		if (task.status != Status.Accepted) revert Err__Not__Accepted(id);
-		emit Evt__Submit__Proof(id, msg.sender, proof);
+		emit Evt__Submit__Proof(id, msg.sender, Status.Pending, proof);
 	}
 
 	function rateCompletedProof(
@@ -298,11 +301,20 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		}
 	}
 
-	function renewApplicationAccept(uint256 id, uint256 date) public onlyOwner {
+	function renewApplicationAccept(
+		uint256 id,
+		uint256 date
+	) public onlyOwner isAccepted(id) {
 		Tasks memory task = getTaskById(id);
 		if (task.status != Status.Accepted) revert Err__Renew__Acceptance(id);
 		s_prodigiUsers[id].date = date;
-		emit Evt__Renew__Accepted(id, date);
+		emit Evt__Renew__Accepted(id, Status.Accepted, date);
+	}
+
+	function rejectRenewApplication(
+		uint256 id
+	) public onlyOwner isAccepted(id) {
+		emit Evt__Renew__Rejected(id, Status.Accepted);
 	}
 
 	function addToBlackList(address addr) public onlyOwner {
@@ -319,8 +331,8 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 			userAddress: msg.sender,
 			title: title
 		});
-		s_ideaId += 1;
 		emit Evt__Proposal__Idea(s_ideaId, msg.sender, title, details);
+		s_ideaId += 1;
 	}
 
 	function rateProposedIdea(uint256 id) public isBlackListed {
@@ -346,9 +358,9 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		emit Evt__Winner__of__Idea(id, idea.userAddress);
 	}
 
-	function getOwner() public view returns (address) {
-		return owner();
-	}
+	// function getOwner() public view returns (address) {
+	// 	return owner();
+	// }
 
 	function withdrawRunningFees() public onlyOwner nonReentrant {
 		if (s_feeDetails.next > block.timestamp) revert Err__Time__is__not_UP();

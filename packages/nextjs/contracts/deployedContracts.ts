@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     ProdigiKill: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
       abi: [
         {
           inputs: [],
@@ -131,7 +131,7 @@ const deployedContracts = {
           anonymous: false,
           inputs: [
             {
-              indexed: false,
+              indexed: true,
               internalType: "address",
               name: "userAddress",
               type: "address",
@@ -188,7 +188,7 @@ const deployedContracts = {
           anonymous: false,
           inputs: [
             {
-              indexed: false,
+              indexed: true,
               internalType: "address",
               name: "donor",
               type: "address",
@@ -320,6 +320,12 @@ const deployedContracts = {
             },
             {
               indexed: false,
+              internalType: "enum ProdigiKill.Status",
+              name: "status",
+              type: "uint8",
+            },
+            {
+              indexed: false,
               internalType: "uint256",
               name: "date",
               type: "uint256",
@@ -357,10 +363,35 @@ const deployedContracts = {
               type: "uint256",
             },
             {
+              indexed: false,
+              internalType: "enum ProdigiKill.Status",
+              name: "status",
+              type: "uint8",
+            },
+          ],
+          name: "Evt__Renew__Rejected",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+            {
               indexed: true,
               internalType: "address",
               name: "userAddress",
               type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "enum ProdigiKill.Status",
+              name: "status",
+              type: "uint8",
             },
             {
               indexed: false,
@@ -479,24 +510,6 @@ const deployedContracts = {
             },
           ],
           name: "applicationBulkStatusChange",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "id",
-              type: "uint256",
-            },
-            {
-              internalType: "enum ProdigiKill.Status",
-              name: "status",
-              type: "uint8",
-            },
-          ],
-          name: "applicationStatusChange",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",
@@ -700,6 +713,19 @@ const deployedContracts = {
             },
           ],
           name: "rateRenewApplication",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
+              name: "id",
+              type: "uint256",
+            },
+          ],
+          name: "rejectRenewApplication",
           outputs: [],
           stateMutability: "nonpayable",
           type: "function",

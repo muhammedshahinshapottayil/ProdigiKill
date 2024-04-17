@@ -121,7 +121,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "userAddress",
         "type": "address"
@@ -178,7 +178,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
         "name": "donor",
         "type": "address"
@@ -310,6 +310,12 @@
       },
       {
         "indexed": false,
+        "internalType": "enum ProdigiKill.Status",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "indexed": false,
         "internalType": "uint256",
         "name": "date",
         "type": "uint256"
@@ -347,10 +353,35 @@
         "type": "uint256"
       },
       {
+        "indexed": false,
+        "internalType": "enum ProdigiKill.Status",
+        "name": "status",
+        "type": "uint8"
+      }
+    ],
+    "name": "Evt__Renew__Rejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
         "indexed": true,
         "internalType": "address",
         "name": "userAddress",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum ProdigiKill.Status",
+        "name": "status",
+        "type": "uint8"
       },
       {
         "indexed": false,
@@ -469,24 +500,6 @@
       }
     ],
     "name": "applicationBulkStatusChange",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum ProdigiKill.Status",
-        "name": "status",
-        "type": "uint8"
-      }
-    ],
-    "name": "applicationStatusChange",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -690,6 +703,19 @@
       }
     ],
     "name": "rateRenewApplication",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "rejectRenewApplication",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
