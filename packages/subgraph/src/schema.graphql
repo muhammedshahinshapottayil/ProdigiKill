@@ -3,12 +3,12 @@ type Proposal @entity {
   userAddress: Bytes!
   title: String!
   details: String!
-  createdAt: String!
-  finalDate: String!
+  createdAt: BigInt!
+  finalDate: BigInt!
   withdrawal: Boolean!
   status: Int!
   transactionHash: String!
-  updatedAt: String
+  updatedAt: BigInt
   proposalRating: [ProposalRating!]! @derivedFrom(field: "ProposalID")
   renewRequest: [RequestRenewal!]! @derivedFrom(field: "ProposalID")
   submitProof: [SubmitProof!]! @derivedFrom(field: "ProposalID")
@@ -19,8 +19,8 @@ type ProposalRating @entity {
   ProposalID: Proposal!
   userAddress: Bytes!
   status: Boolean!
-  createdAt: String!
-  updatedAt: String
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type RequestRenewal @entity {
@@ -28,10 +28,11 @@ type RequestRenewal @entity {
   ProposalID: Proposal!
   userAddress: Bytes!
   reason: String!
+  date: BigInt!
   status: Int!
   renewalRating: [RenewRating!]! @derivedFrom(field: "ProposalID")
-  createdAt: String!
-  updatedAt: String
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type RenewRating @entity {
@@ -39,8 +40,8 @@ type RenewRating @entity {
   ProposalID: RequestRenewal!
   userAddress: Bytes!
   status: Boolean!
-  createdAt: String!
-  updatedAt: String
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type SubmitProof @entity {
@@ -50,8 +51,8 @@ type SubmitProof @entity {
   proof: String!
   status: Int!
   submitRating: [SubmitRating!]! @derivedFrom(field: "ProposalID")
-  createdAt: String!
-  updatedAt: String
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type SubmitRating @entity {
@@ -59,20 +60,20 @@ type SubmitRating @entity {
   ProposalID: SubmitProof!
   userAddress: Bytes!
   status: Boolean!
-  createdAt: String!
-  updatedAt: String
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type BlackListed @entity {
   id: ID!
   status: Boolean!
-  createdAt: String!
-  updatedAt: String
+  createdAt: BigInt!
+  updatedAt: BigInt
 }
 
 type Donations @entity {
   id: ID!
   address: Bytes!
   value: BigInt!
-  createdAt: String!
+  createdAt: BigInt!
 }

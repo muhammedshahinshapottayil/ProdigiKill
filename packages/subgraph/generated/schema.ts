@@ -89,30 +89,30 @@ export class Proposal extends Entity {
     this.set("details", Value.fromString(value));
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get finalDate(): string {
+  get finalDate(): BigInt {
     let value = this.get("finalDate");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set finalDate(value: string) {
-    this.set("finalDate", Value.fromString(value));
+  set finalDate(value: BigInt) {
+    this.set("finalDate", Value.fromBigInt(value));
   }
 
   get withdrawal(): boolean {
@@ -154,20 +154,20 @@ export class Proposal extends Entity {
     this.set("transactionHash", Value.fromString(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 
@@ -276,33 +276,33 @@ export class ProposalRating extends Entity {
     this.set("status", Value.fromBoolean(value));
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 }
@@ -387,6 +387,19 @@ export class RequestRenewal extends Entity {
     this.set("reason", Value.fromString(value));
   }
 
+  get date(): BigInt {
+    let value = this.get("date");
+    if (!value || value.kind == ValueKind.NULL) {
+      throw new Error("Cannot return null for a required field.");
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set date(value: BigInt) {
+    this.set("date", Value.fromBigInt(value));
+  }
+
   get status(): i32 {
     let value = this.get("status");
     if (!value || value.kind == ValueKind.NULL) {
@@ -408,33 +421,33 @@ export class RequestRenewal extends Entity {
     );
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 }
@@ -519,33 +532,33 @@ export class RenewRating extends Entity {
     this.set("status", Value.fromBoolean(value));
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 }
@@ -651,33 +664,33 @@ export class SubmitProof extends Entity {
     );
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 }
@@ -762,33 +775,33 @@ export class SubmitRating extends Entity {
     this.set("status", Value.fromBoolean(value));
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 }
@@ -847,33 +860,33 @@ export class BlackListed extends Entity {
     this.set("status", Value.fromBoolean(value));
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get updatedAt(): string | null {
+  get updatedAt(): BigInt | null {
     let value = this.get("updatedAt");
     if (!value || value.kind == ValueKind.NULL) {
       return null;
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set updatedAt(value: string | null) {
+  set updatedAt(value: BigInt | null) {
     if (!value) {
       this.unset("updatedAt");
     } else {
-      this.set("updatedAt", Value.fromString(<string>value));
+      this.set("updatedAt", Value.fromBigInt(<BigInt>value));
     }
   }
 }
@@ -943,17 +956,17 @@ export class Donations extends Entity {
     this.set("value", Value.fromBigInt(value));
   }
 
-  get createdAt(): string {
+  get createdAt(): BigInt {
     let value = this.get("createdAt");
     if (!value || value.kind == ValueKind.NULL) {
       throw new Error("Cannot return null for a required field.");
     } else {
-      return value.toString();
+      return value.toBigInt();
     }
   }
 
-  set createdAt(value: string) {
-    this.set("createdAt", Value.fromString(value));
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 }
 
