@@ -77,3 +77,30 @@ type Donations @entity {
   value: BigInt!
   createdAt: BigInt!
 }
+
+type ProposalIdea @entity {
+  id: ID!
+  address: Bytes!
+  title: String!
+  details: String!
+  createdAt: BigInt!
+  winner: Boolean
+  winningDate: BigInt
+  rating: [ProposalIdeaRating!]! @derivedFrom(field: "ProposalID")
+}
+
+type ProposalIdeaRating @entity {
+  id: ID!
+  ProposalID: ProposalIdea!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type Winner @entity {
+  id: ID!
+  ProposalID: ProposalIdea!
+  address: Bytes!
+  createdAt: BigInt!
+}

@@ -13,6 +13,9 @@ import {
   Evt__Withdrawed__Reward,
   Evt__Black__Listed,
   Evt__Donation,
+  Evt__Proposal__Idea,
+  Evt__Rate__Proposed__Idea,
+  Evt__Winner__of__Idea,
 } from "../generated/ProdigiKill/ProdigiKill";
 import {
   Proposal,
@@ -23,6 +26,9 @@ import {
   SubmitRating,
   BlackListed,
   Donations,
+  ProposalIdea,
+  ProposalIdeaRating,
+  Winner,
 } from "../generated/schema";
 
 function genID(id: BigInt, address: Address): string {
@@ -174,7 +180,7 @@ export function handleWithdrawReward(event: Evt__Withdrawed__Reward): void {
   }
 }
 
-export function handleBlackListing(event: Evt__Black__Listed) {
+export function handleBlackListing(event: Evt__Black__Listed): void {
   let list = BlackListed.load(event.params.userAddress.toHexString());
   if (list === null) {
     list = new BlackListed(event.params.userAddress.toHexString());
@@ -185,10 +191,53 @@ export function handleBlackListing(event: Evt__Black__Listed) {
   list.save();
 }
 
-export function handleDonation(event: Evt__Donation) {
+export function handleDonation(event: Evt__Donation): void {
   const donation = new Donations(event.transaction.hash.toHexString());
   donation.address = event.params.donor;
   donation.value = event.params.value;
   donation.createdAt = event.block.timestamp;
   donation.save();
+}
+
+export function handleProposeIdea(event: Evt__Proposal__Idea): void {
+  const proposal = new ProposalIdea(event.params.id.toHexString());
+  proposal.address = event.params.userAddress;
+  proposal.title = event.params.title;
+  proposal.winner = false;
+  proposal.details = event.params.details;
+  proposal.createdAt = event.block.timestamp;
+  proposal.save();
+}
+
+export function handleProposeIdeaRating(
+  event: Evt__Rate__Proposed__Idea
+): void {
+  let rating = ProposalIdeaRating.load(
+    genID(event.params.id, event.params.userAddress)
+  );
+  if (rating === null) {
+    rating = new ProposalIdeaRating(
+      genID(event.params.id, event.params.userAddress)
+    );
+    rating.ProposalID = event.params.id.toHexString();
+    rating.userAddress = event.params.userAddress;
+    rating.createdAt = event.block.timestamp;
+    rating.status = true;
+  } else {
+    rating.status = !rating.status;
+  }
+  rating.updatedAt = event.block.timestamp;
+  rating.save();
+}
+
+export function handleProposalWinner(event: Evt__Winner__of__Idea) {
+  const proposal = new ProposalIdea(event.params.id.toHexString());
+  proposal.winner = true;
+  proposal.winningDate = event.block.timestamp;
+  const winner = new Winner(event.params.id.toHexString());
+  winner.ProposalID = event.params.id.toHexString();
+  winner.address = event.params.userAddress;
+  winner.createdAt = event.block.timestamp;
+  proposal.save();
+  winner.save();
 }

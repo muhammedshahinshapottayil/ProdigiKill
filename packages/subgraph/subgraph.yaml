@@ -48,4 +48,10 @@ dataSources:
           handler: handleBlackListing
         - event: Evt__Donation(indexed address,uint256)
           handler: handleDonation
+        - event: Evt__Proposal__Idea(indexed uint256,indexed address,string,string)
+          handler: handleProposeIdea
+        - event: Evt__Rate__Proposed__Idea(indexed uint256,indexed address)
+          handler: handleProposeIdeaRating
+        - event: Evt__Winner__of__Idea(indexed uint256,indexed address)
+          handler: handleProposalWinner
       file: ./src/mapping.ts
