@@ -30,4 +30,28 @@ dataSources:
           handler: handleRenewCreate
         - event: Evt__Renew__Rate(indexed uint256,indexed address)
           handler: handleRenewRating
+        - event: Evt__Change__Status(indexed uint256,uint8)
+          handler: handleProposalStatusChange
+        - event: Evt__Renew__Accepted(indexed uint256,uint8,uint256)
+          handler: handleRenewAccepted
+        - event: Evt__Renew__Rejected(indexed uint256,uint8)
+          handler: handleRenewReject
+        - event: Evt__Submit__Proof(indexed uint256,indexed address,uint8,string)
+          handler: handleSubmitProof
+        - event: Evt__Completed__Proof(indexed uint256,indexed address)
+          handler: handleSubmitRating
+        - event: Evt__Withdrawed__Reward(indexed uint256,indexed address)
+          handler: handleWithdrawReward
+        - event: Evt__Withdrawed__Collateral(indexed uint256,indexed address)
+          handler: handleWithdrawCollateral
+        - event: Evt__Black__Listed(indexed address,bool)
+          handler: handleBlackListing
+        - event: Evt__Donation(indexed address,uint256)
+          handler: handleDonation
+        - event: Evt__Proposal__Idea(indexed uint256,indexed address,string,string)
+          handler: handleProposeIdea
+        - event: Evt__Rate__Proposed__Idea(indexed uint256,indexed address)
+          handler: handleProposeIdeaRating
+        - event: Evt__Winner__of__Idea(indexed uint256,indexed address)
+          handler: handleProposalWinner
       file: ProdigiKill\ProdigiKill.wasm

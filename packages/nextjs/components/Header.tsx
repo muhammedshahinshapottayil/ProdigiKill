@@ -15,7 +15,7 @@ type HeaderMenuLink = {
 };
 
 export const menuLinks: HeaderMenuLink[] = [
-  { label: "Home", href: "/" },
+  { label: "Home", href: "/home" },
   { label: "Debug Contracts", href: "/debug", icon: <BugAntIcon className="h-5 w-5" /> },
   { label: "Subgraph", href: "/subgraph", icon: <MagnifyingGlassIcon className="h-5 w-5" /> },
 ];

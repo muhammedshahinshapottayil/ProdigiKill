@@ -230,7 +230,7 @@ export function handleProposeIdeaRating(
   rating.save();
 }
 
-export function handleProposalWinner(event: Evt__Winner__of__Idea) {
+export function handleProposalWinner(event: Evt__Winner__of__Idea):void {
   const proposal = new ProposalIdea(event.params.id.toHexString());
   proposal.winner = true;
   proposal.winningDate = event.block.timestamp;

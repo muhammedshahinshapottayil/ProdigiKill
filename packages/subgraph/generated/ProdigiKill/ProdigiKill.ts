@@ -506,21 +506,6 @@ export class ProdigiKill extends ethereum.SmartContract {
     );
   }
 
-  getOwner(): Address {
-    let result = super.call("getOwner", "getOwner():(address)", []);
-
-    return result[0].toAddress();
-  }
-
-  try_getOwner(): ethereum.CallResult<Address> {
-    let result = super.tryCall("getOwner", "getOwner():(address)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
   getTaskById(id: BigInt): ProdigiKill__getTaskByIdResultValue0Struct {
     let result = super.call(
       "getTaskById",
