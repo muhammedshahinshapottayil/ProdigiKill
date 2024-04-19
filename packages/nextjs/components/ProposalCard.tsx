@@ -29,13 +29,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   const formattedCreatedAt = format(parseISO(dateCreated.toISOString()), "MMM d, yyyy");
 
   const handleLike = async () => {
-    try {
-      setIsLiked(likeStatus => !likeStatus);
-      setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
-      await rate();
-    } catch (error) {
-      console.error(error);
-    }
+    setIsLiked(likeStatus => !likeStatus);
+    setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
+    await rate();
   };
 
   const { writeAsync: rate } = useScaffoldContractWrite({
@@ -45,6 +41,10 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     blockConfirmations: 1,
     onBlockConfirmation: txnReceipt => {
       console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+    onError: () => {
+      setIsLiked(likeStatus => !likeStatus);
+      setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
     },
   });
 

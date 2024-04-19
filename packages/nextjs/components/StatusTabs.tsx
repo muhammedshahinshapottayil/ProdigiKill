@@ -39,7 +39,7 @@ function StatusTabs({ setStatus, status }: { status: Status; setStatus: SetState
             status === Status.INCompleted ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
-          In Progress
+          In Complete
         </button>
         <button
           onClick={() => handleStatusChange(Status.Completed)}
