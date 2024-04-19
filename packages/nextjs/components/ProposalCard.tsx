@@ -5,7 +5,8 @@ import { fromUnixTime } from "date-fns";
 import { format, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
 import { FaRegThumbsUp } from "react-icons/fa";
-import { ProposalCardProps } from "~~/types/utils";
+import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
+import { ProposalCardProps, Status } from "~~/types/utils";
 
 const ProposalCard: React.FC<ProposalCardProps> = ({
   title,
@@ -14,6 +15,8 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   createdAt,
   finalDate,
   rating,
+  id,
+  status,
 }) => {
   const [isLiked, setIsLiked] = useState<boolean>(userRatingStatus.length > 0);
   const [noOfLikes, setNoOfLikes] = useState<number>(rating.length);
@@ -25,10 +28,25 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   const formattedFinalDate = format(parseISO(dateFinal.toISOString()), "MMM d, yyyy");
   const formattedCreatedAt = format(parseISO(dateCreated.toISOString()), "MMM d, yyyy");
 
-  const handleLike = () => {
-    setIsLiked(likeStatus => !likeStatus);
-    setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
+  const handleLike = async () => {
+    try {
+      setIsLiked(likeStatus => !likeStatus);
+      setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
+      await rate();
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  const { writeAsync: rate } = useScaffoldContractWrite({
+    contractName: "ProdigiKill",
+    functionName: "rateApplication",
+    args: [BigInt(id.slice(2))],
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between h-full">
@@ -63,16 +81,18 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           <BsCalendarCheck />
           <span>{formattedFinalDate.toString()}</span>
         </div>
-        <div className="flex items-center space-x-2 text-gray-500">
-          <div
-            onClick={handleLike}
-            className={`cursor-pointer 
+        {status === Status.Pending && (
+          <div className="flex items-center space-x-2 text-gray-500">
+            <div
+              onClick={handleLike}
+              className={`cursor-pointer 
     ${isLiked ? "text-red-500" : "hover:text-red-500"} `}
-          >
-            <FaRegThumbsUp />
+            >
+              <FaRegThumbsUp />
+            </div>
+            <span>{isLiked ? "Liked" : "Like"}</span>
           </div>
-          <span>{isLiked ? "Liked" : "Like"}</span>
-        </div>
+        )}
       </div>
     </div>
   );

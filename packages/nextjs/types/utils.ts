@@ -2,10 +2,18 @@ export type Tuple<T, MaxLength extends number = 10, Current extends T[] = []> = 
   ? Current
   : Current | Tuple<T, MaxLength, [T, ...Current]>;
 
+export enum Status {
+  Pending,
+  Accepted,
+  Rejected,
+  INCompleted,
+  Completed,
+}
+
 export interface ProposalCardProps {
   userAddress: string;
   title: string;
-  status: string;
+  status: Status;
   id: string;
   finalDate: number;
   details: string;
@@ -27,7 +35,7 @@ export type Proposal = {
   updatedAt: number;
   transactionHash: string;
   title: string;
-  status: string;
+  status: Status;
   id: string;
   finalDate: number;
   details: string;
@@ -39,3 +47,5 @@ export type Proposal = {
 export interface HomeQueryResponse {
   proposals: Proposal[];
 }
+
+export type SetStateProp<T> = React.Dispatch<React.SetStateAction<T>>;

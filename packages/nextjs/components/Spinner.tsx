@@ -1,8 +1,8 @@
 import { RiseLoader } from "react-spinners";
 
-function Spinner() {
+function Spinner({ isCenter = true }: { isCenter?: boolean }) {
   return (
-    <div className="flex justify-center items-center h-screen">
+    <div className={`flex justify-center items-center ${isCenter && "h-screen"}`}>
       <RiseLoader color="#36d7b7" />
     </div>
   );
