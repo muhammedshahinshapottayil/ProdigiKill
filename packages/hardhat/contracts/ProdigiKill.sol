@@ -210,12 +210,18 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		if (msg.value != 0.05 ether) revert Err__Renew();
 		Tasks memory task = getTaskById(id);
 		if (task.status != Status.Accepted) revert Err__Renew();
-		emit Evt__Renew(id, msg.sender, delayReason, date, Status.Pending);
+		emit Evt__Renew(
+			id,
+			msg.sender,
+			delayReason,
+			task.date + date * 1 days,
+			Status.Pending
+		);
 	}
 
 	function rateRenewApplication(
 		uint256 id
-	) public notOwner(id) isBlackListed isPending(id) {
+	) public notOwner(id) isBlackListed isAccepted(id) {
 		emit Evt__Renew__Rate(id, msg.sender);
 	}
 
@@ -265,23 +271,6 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		Tasks memory task = s_prodigiUsers[id];
 		return task;
 	}
-
-	// function applicationStatusChange(
-	// 	uint256 id,
-	// 	Status status
-	// ) public onlyOwner {
-	// 	if (Status.Accepted == status) {
-	// 		s_prodigiUsers[id].status = Status.Accepted;
-	// 	} else if (Status.Rejected == status) {
-	// 		s_prodigiUsers[id].status = Status.Rejected;
-	// 	} else if (Status.Completed == status) {
-	// 		s_prodigiUsers[id].status = Status.Completed;
-	// 	} else if (Status.INCompleted == status) {
-	// 		s_prodigiUsers[id].status = Status.INCompleted;
-	// 	}
-
-	// 	emit Evt__Change__Status(id, s_prodigiUsers[id].status);
-	// }
 
 	function applicationBulkStatusChange(
 		uint256[] memory arrId,
