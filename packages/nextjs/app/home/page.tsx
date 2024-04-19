@@ -29,12 +29,12 @@ const HomePage: React.FC = () => {
   const data: Proposal[] = useMemo(() => {
     if (IsLoading) setIsLoading(false);
     setDataLoading(true);
-    if (proposalData && !loading && address) {
+    if (proposalData && !loading && address && status in Status) {
       setDataLoading(false);
       return proposalData.proposals.length > 0 ? proposalData.proposals : [];
     }
     return [];
-  }, [proposalData, loading, address, status]);
+  }, [proposalData, loading, address, status, IsLoading]);
 
   return IsLoading ? (
     <Spinner />
