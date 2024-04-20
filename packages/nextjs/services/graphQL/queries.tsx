@@ -27,10 +27,10 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int) {
 }
 `;
 
-const PROPOSAL_REJECT_GRAPHQL = `
+const PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL = `
 query MyQuery($status:Int!) {
   proposals(where: {status:$status}
-    orderBy: createdAt
+    orderBy: updatedAt
     orderDirection: desc
   ) {
     withdrawal
@@ -53,7 +53,7 @@ query MyQuery($status:Int!) {
 const PROPOSAL_ACCEPTED_GRAPHQL = `
 query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
   proposals(where: {finalDate_gt: $currentDate, withdrawal: false,status:$status}
-    orderBy: createdAt
+    orderBy: updatedAt
     orderDirection: desc
   ) {
     withdrawal
@@ -92,4 +92,4 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
 }
 `;
 
-export { PROPOSAL_PENDING_GRAPHQL, PROPOSAL_ACCEPTED_GRAPHQL, PROPOSAL_REJECT_GRAPHQL };
+export { PROPOSAL_PENDING_GRAPHQL, PROPOSAL_ACCEPTED_GRAPHQL, PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL };

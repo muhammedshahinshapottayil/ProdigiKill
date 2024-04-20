@@ -9,7 +9,7 @@ import StatusTabs from "~~/components/StatusTabs";
 import {
   PROPOSAL_ACCEPTED_GRAPHQL,
   PROPOSAL_PENDING_GRAPHQL,
-  PROPOSAL_REJECT_GRAPHQL,
+  PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
 } from "~~/services/graphQL/queries";
 import { Proposal, Status } from "~~/types/utils";
 
@@ -26,8 +26,8 @@ const HomePage: React.FC = () => {
       ? PROPOSAL_PENDING_GRAPHQL
       : status === Status.Accepted
       ? PROPOSAL_ACCEPTED_GRAPHQL
-      : status === Status.Rejected
-      ? PROPOSAL_REJECT_GRAPHQL
+      : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
+      ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
       : "",
   );
   const currentDate = Math.floor(Date.now() / 1000);
@@ -70,7 +70,7 @@ const HomePage: React.FC = () => {
                     rating={item?.rating}
                     status={item.status}
                     userRatingStatus={item?.userRatingStatus}
-                    currentAddress={address!}
+                    currentAddress={address ?? ""}
                     renewRequest={item?.renewRequest}
                     submitProof={item?.submitProof}
                     key={item.transactionHash}
