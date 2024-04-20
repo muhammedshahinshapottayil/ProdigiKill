@@ -1,4 +1,4 @@
-const PROPOSAL_PENDING_ACCEPTED_GRAPHQL = `
+const PROPOSAL_PENDING_GRAPHQL = `
 query MyQuery($address: String!, $currentDate: BigInt!,$status:Int) {
   proposals(where: {finalDate_gt: $currentDate, withdrawal: false,status:$status}
     orderBy: createdAt
@@ -27,4 +27,69 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int) {
 }
 `;
 
-export { PROPOSAL_PENDING_ACCEPTED_GRAPHQL };
+const PROPOSAL_REJECT_GRAPHQL = `
+query MyQuery($status:Int!) {
+  proposals(where: {status:$status}
+    orderBy: createdAt
+    orderDirection: desc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
+  }
+}
+`;
+
+const PROPOSAL_ACCEPTED_GRAPHQL = `
+query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
+  proposals(where: {finalDate_gt: $currentDate, withdrawal: false,status:$status}
+    orderBy: createdAt
+    orderDirection: desc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    renewRequest(where: {status: 0}){
+      userAddress
+      reason
+      date
+      createdAt
+      userLiked:renewalRating(where: {userAddress:$address,status: true}){
+        status
+      }
+      renewalRating(where: {status: true}){
+        status
+      }
+    }
+    submitProof(where: {status: 0}){
+      proof
+      createdAt
+      submitRating(where: {status: true}){
+        status
+      }
+      userLiked:submitRating(where: {userAddress: $address,status: true}){
+        status
+      }
+    }
+  }
+}
+`;
+
+export { PROPOSAL_PENDING_GRAPHQL, PROPOSAL_ACCEPTED_GRAPHQL, PROPOSAL_REJECT_GRAPHQL };

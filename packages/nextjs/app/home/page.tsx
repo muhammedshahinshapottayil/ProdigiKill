@@ -6,7 +6,11 @@ import { useAccount } from "wagmi";
 import ProposalCard from "~~/components/ProposalCard";
 import Spinner from "~~/components/Spinner";
 import StatusTabs from "~~/components/StatusTabs";
-import { PROPOSAL_PENDING_ACCEPTED_GRAPHQL } from "~~/services/graphQL/queries";
+import {
+  PROPOSAL_ACCEPTED_GRAPHQL,
+  PROPOSAL_PENDING_GRAPHQL,
+  PROPOSAL_REJECT_GRAPHQL,
+} from "~~/services/graphQL/queries";
 import { Proposal, Status } from "~~/types/utils";
 
 const HomePage: React.FC = () => {
@@ -18,7 +22,13 @@ const HomePage: React.FC = () => {
   const [status, setStatus] = useState<Status>(Status.Pending);
 
   const PROPOSAL_GQL = gql(
-    status === Status.Pending || status === Status.Accepted ? PROPOSAL_PENDING_ACCEPTED_GRAPHQL : "",
+    status === Status.Pending
+      ? PROPOSAL_PENDING_GRAPHQL
+      : status === Status.Accepted
+      ? PROPOSAL_ACCEPTED_GRAPHQL
+      : status === Status.Rejected
+      ? PROPOSAL_REJECT_GRAPHQL
+      : "",
   );
   const currentDate = Math.floor(Date.now() / 1000);
   const { data: proposalData, loading } = useQuery(PROPOSAL_GQL, {
@@ -41,6 +51,7 @@ const HomePage: React.FC = () => {
   ) : (
     <div className="bg-gray-100 min-h-screen">
       <StatusTabs status={status} setStatus={setStatus} />
+
       <div className="container mx-auto py-8">
         {!DataLoading ? (
           data.length === 0 ? (
@@ -56,9 +67,12 @@ const HomePage: React.FC = () => {
                     title={item.title}
                     details={item.details}
                     createdAt={item.createdAt}
-                    rating={item.rating}
+                    rating={item?.rating}
                     status={item.status}
-                    userRatingStatus={item.userRatingStatus}
+                    userRatingStatus={item?.userRatingStatus}
+                    currentAddress={address!}
+                    renewRequest={item?.renewRequest}
+                    submitProof={item?.submitProof}
                     key={item.transactionHash}
                   />
                 ))}

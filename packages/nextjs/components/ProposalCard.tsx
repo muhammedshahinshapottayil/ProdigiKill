@@ -1,25 +1,47 @@
 "use client";
 
 import React, { useState } from "react";
+import CustomModal from "./CustomModal";
+import LikeButton from "./LikeButton";
+import RenewCard from "./RenewCard";
 import { fromUnixTime } from "date-fns";
 import { format, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
-import { FaRegThumbsUp } from "react-icons/fa";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { ProposalCardProps, Status } from "~~/types/utils";
+import { getID } from "~~/utils";
+import { notification } from "~~/utils/scaffold-eth";
 
 const ProposalCard: React.FC<ProposalCardProps> = ({
   title,
   details,
-  userRatingStatus,
   createdAt,
   finalDate,
-  rating,
   id,
   status,
+  currentAddress,
+  userAddress,
+  userRatingStatus = [],
+  rating = [],
+  submitProof = [],
+  renewRequest = [],
 }) => {
-  const [isLiked, setIsLiked] = useState<boolean>(userRatingStatus.length > 0);
-  const [noOfLikes, setNoOfLikes] = useState<number>(rating.length);
+  const [isLiked, setIsLiked] = useState<boolean>(
+    status === Status.Accepted
+      ? submitProof.length > 0
+        ? submitProof[0].userLiked.length > 0
+        : userRatingStatus.length > 0
+      : userRatingStatus.length > 0,
+  );
+
+  const [noOfLikes, setNoOfLikes] = useState<number>(
+    status === Status.Accepted
+      ? submitProof.length > 0
+        ? submitProof[0].submitRating.length
+        : rating.length
+      : rating.length,
+  );
+
   const [showFullDetails, setShowFullDetails] = useState<boolean>(false);
 
   const dateFinal = fromUnixTime(finalDate);
@@ -28,16 +50,10 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   const formattedFinalDate = format(parseISO(dateFinal.toISOString()), "MMM d, yyyy");
   const formattedCreatedAt = format(parseISO(dateCreated.toISOString()), "MMM d, yyyy");
 
-  const handleLike = async () => {
-    setIsLiked(likeStatus => !likeStatus);
-    setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
-    await rate();
-  };
-
-  const { writeAsync: rate } = useScaffoldContractWrite({
+  const { writeAsync: rateApplication } = useScaffoldContractWrite({
     contractName: "ProdigiKill",
     functionName: "rateApplication",
-    args: [BigInt(id.slice(2))],
+    args: [getID(id)],
     blockConfirmations: 1,
     onBlockConfirmation: txnReceipt => {
       console.log("Transaction blockHash", txnReceipt.blockHash);
@@ -47,6 +63,54 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
     },
   });
+
+  const { writeAsync: rateCompletedProof } = useScaffoldContractWrite({
+    contractName: "ProdigiKill",
+    functionName: "rateCompletedProof",
+    args: [getID(id)],
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+    onError: () => {
+      setIsLiked(likeStatus => !likeStatus);
+      setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
+    },
+  });
+
+  const handleLike = async () => {
+    setIsLiked(likeStatus => !likeStatus);
+    setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
+    switch (status) {
+      case Status.Pending:
+        await rateApplication();
+        break;
+      case Status.Accepted:
+        await rateCompletedProof();
+        break;
+      default:
+        notification.error("Something went wrong");
+        break;
+    }
+  };
+
+  const ReadMore = ({ isReadMore }: { isReadMore: boolean }) =>
+    isReadMore && (
+      <CustomModal
+        clickElement={
+          <button
+            className=" float-right text-xs text-blue-500 hover:text-blue-700 focus:outline-none"
+            onClick={() => setShowFullDetails(!showFullDetails)}
+          >
+            {showFullDetails ? "Read less" : "Read more"}
+          </button>
+        }
+      >
+        <p className={`text-gray-600`}>
+          {status === Status.Accepted && submitProof.length > 0 ? submitProof[0].proof : details}
+        </p>
+      </CustomModal>
+    );
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between h-full">
@@ -66,32 +130,51 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
             {noOfLikes}
           </span>
         </div>
-        <p className={`text-gray-600 line-clamp-3`}>{details}</p>
-        {details.length > 100 && (
-          <button
-            className=" float-right text-xs text-blue-500 hover:text-blue-700 focus:outline-none"
-            onClick={() => setShowFullDetails(!showFullDetails)}
-          >
-            {showFullDetails ? "Read less" : "Read more"}
-          </button>
+        <p className={`text-gray-600 line-clamp-3`}>
+          {status === Status.Accepted && submitProof.length > 0 ? submitProof[0].proof : details}
+        </p>
+
+        {status === Status.Accepted && submitProof.length > 0 ? (
+          <ReadMore isReadMore={submitProof[0].proof.length > 100} />
+        ) : (
+          <ReadMore isReadMore={details.length > 100} />
         )}
       </div>
+      {renewRequest.length > 0 ? (
+        <CustomModal
+          clickElement={
+            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+              Renew Applied
+            </span>
+          }
+        >
+          <RenewCard
+            createdAt={renewRequest[0].createdAt}
+            currentUser={currentAddress}
+            date={renewRequest[0].date}
+            id={id}
+            reason={renewRequest[0].reason}
+            renewalRating={renewRequest[0].renewalRating}
+            userAddress={userAddress}
+            userLiked={renewRequest[0].userLiked}
+          />
+        </CustomModal>
+      ) : (
+        ""
+      )}{" "}
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center space-x-2 text-gray-500">
           <BsCalendarCheck />
           <span>{formattedFinalDate.toString()}</span>
         </div>
-        {status === Status.Pending && (
-          <div className="flex items-center space-x-2 text-gray-500">
-            <div
-              onClick={handleLike}
-              className={`cursor-pointer 
-    ${isLiked ? "text-red-500" : "hover:text-red-500"} `}
-            >
-              <FaRegThumbsUp />
-            </div>
-            <span>{isLiked ? "Liked" : "Like"}</span>
-          </div>
+        {userAddress !== currentAddress ? (
+          status === Status.Pending || (status === Status.Accepted && submitProof.length > 0) ? (
+            <LikeButton handleLike={handleLike} isLiked={isLiked} />
+          ) : (
+            ""
+          )
+        ) : (
+          ""
         )}
       </div>
     </div>

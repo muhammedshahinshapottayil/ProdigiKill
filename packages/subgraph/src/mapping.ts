@@ -68,6 +68,9 @@ export function handleProposalRating(event: Evt__Rate): void {
 }
 
 export function handleRenewCreate(event: Evt__Renew): void {
+  const IsActive = RequestRenewal.load(event.params.id.toHexString());
+  if (IsActive !== null) return;
+
   const renew = new RequestRenewal(event.params.id.toHexString());
   renew.ProposalID = event.params.id.toHexString();
   renew.userAddress = event.params.userAddress;
@@ -132,6 +135,9 @@ export function handleRenewReject(event: Evt__Renew__Rejected): void {
 }
 
 export function handleSubmitProof(event: Evt__Submit__Proof): void {
+  const IsActive = SubmitProof.load(event.params.id.toHexString());
+  if (IsActive !== null) return;
+
   const submit = new SubmitProof(event.params.id.toHexString());
   submit.ProposalID = event.params.id.toHexString();
   submit.userAddress = event.params.userAddress;
@@ -230,7 +236,7 @@ export function handleProposeIdeaRating(
   rating.save();
 }
 
-export function handleProposalWinner(event: Evt__Winner__of__Idea):void {
+export function handleProposalWinner(event: Evt__Winner__of__Idea): void {
   const proposal = new ProposalIdea(event.params.id.toHexString());
   proposal.winner = true;
   proposal.winningDate = event.block.timestamp;
