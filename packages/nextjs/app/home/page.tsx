@@ -18,7 +18,7 @@ const HomePage: React.FC = () => {
   const [status, setStatus] = useState<Status>(Status.Pending);
 
   const PROPOSAL_GQL = gql(
-    status == Status.Pending || status === Status.Accepted ? PROPOSAL_PENDING_ACCEPTED_GRAPHQL : "",
+    status === Status.Pending || status === Status.Accepted ? PROPOSAL_PENDING_ACCEPTED_GRAPHQL : "",
   );
   const currentDate = Math.floor(Date.now() / 1000);
   const { data: proposalData, loading } = useQuery(PROPOSAL_GQL, {

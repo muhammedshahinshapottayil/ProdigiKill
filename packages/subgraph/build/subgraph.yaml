@@ -1,0 +1,57 @@
+specVersion: 0.0.4
+description: ProdigiKill
+repository: https://github.com/scaffold-eth/se-2/packages/subgraph/
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: ProdigiKill
+    network: localhost
+    source:
+      abi: ProdigiKill
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Proposal
+        - ProposalRating
+        - RenewRating
+      abis:
+        - name: ProdigiKill
+          file: ProdigiKill\abis\localhost_ProdigiKill.json
+      eventHandlers:
+        - event: Evt__Applied(indexed uint256,indexed address,string,string,uint256,uint8)
+          handler: handleProposalCreate
+        - event: Evt__Rate(indexed uint256,indexed address)
+          handler: handleProposalRating
+        - event: Evt__Renew(indexed uint256,indexed address,string,uint256,uint8)
+          handler: handleRenewCreate
+        - event: Evt__Renew__Rate(indexed uint256,indexed address)
+          handler: handleRenewRating
+        - event: Evt__Change__Status(indexed uint256,uint8)
+          handler: handleProposalStatusChange
+        - event: Evt__Renew__Accepted(indexed uint256,uint8,uint256)
+          handler: handleRenewAccepted
+        - event: Evt__Renew__Rejected(indexed uint256,uint8)
+          handler: handleRenewReject
+        - event: Evt__Submit__Proof(indexed uint256,indexed address,uint8,string)
+          handler: handleSubmitProof
+        - event: Evt__Completed__Proof(indexed uint256,indexed address)
+          handler: handleSubmitRating
+        - event: Evt__Withdrawed__Reward(indexed uint256,indexed address)
+          handler: handleWithdrawReward
+        - event: Evt__Withdrawed__Collateral(indexed uint256,indexed address)
+          handler: handleWithdrawCollateral
+        - event: Evt__Black__Listed(indexed address,bool)
+          handler: handleBlackListing
+        - event: Evt__Donation(indexed address,uint256)
+          handler: handleDonation
+        - event: Evt__Proposal__Idea(indexed uint256,indexed address,string,string)
+          handler: handleProposeIdea
+        - event: Evt__Rate__Proposed__Idea(indexed uint256,indexed address)
+          handler: handleProposeIdeaRating
+        - event: Evt__Winner__of__Idea(indexed uint256,indexed address)
+          handler: handleProposalWinner
+      file: ProdigiKill\ProdigiKill.wasm
