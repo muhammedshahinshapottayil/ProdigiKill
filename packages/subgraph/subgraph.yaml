@@ -9,7 +9,7 @@ dataSources:
     network: localhost
     source:
       abi: ProdigiKill
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
+      address: "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -32,7 +32,7 @@ dataSources:
           handler: handleRenewRating
         - event: Evt__Change__Status(indexed uint256,uint8)
           handler: handleProposalStatusChange
-        - event: Evt__Renew__Accepted(indexed uint256,uint8,uint256)
+        - event: Evt__Renew__Accepted(indexed uint256,uint8)
           handler: handleRenewAccepted
         - event: Evt__Renew__Rejected(indexed uint256,uint8)
           handler: handleRenewReject

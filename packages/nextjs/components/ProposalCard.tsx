@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import CustomModal from "./CustomModal";
 import LikeButton from "./LikeButton";
 import RenewCard from "./RenewCard";
-import { fromUnixTime } from "date-fns";
-import { format, parseISO } from "date-fns";
+import { format, fromUnixTime, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { ProposalCardProps, Status } from "~~/types/utils";
@@ -41,8 +40,6 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         : rating.length
       : rating.length,
   );
-
-  const [showFullDetails, setShowFullDetails] = useState<boolean>(false);
 
   const dateFinal = fromUnixTime(finalDate);
   const dateCreated = fromUnixTime(createdAt);
@@ -98,17 +95,27 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     isReadMore && (
       <CustomModal
         clickElement={
-          <button
-            className=" float-right text-xs text-blue-500 hover:text-blue-700 focus:outline-none"
-            onClick={() => setShowFullDetails(!showFullDetails)}
-          >
-            {showFullDetails ? "Read less" : "Read more"}
+          <button className=" float-right text-xs text-blue-500 hover:text-blue-700 focus:outline-none">
+            Read more
           </button>
         }
       >
         <p className={`text-gray-600`}>
           {status === Status.Accepted && submitProof.length > 0 ? submitProof[0].proof : details}
         </p>
+      </CustomModal>
+    );
+
+  const ReadProposals = ({ isReadMore }: { isReadMore: boolean }) =>
+    isReadMore && (
+      <CustomModal
+        clickElement={
+          <button className=" float-right text-xs text-blue-500 hover:text-blue-700 focus:outline-none">
+            Read Proposal
+          </button>
+        }
+      >
+        <p className={`text-gray-600`}>{details}</p>
       </CustomModal>
     );
 
@@ -143,7 +150,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       {renewRequest.length > 0 ? (
         <CustomModal
           clickElement={
-            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 cursor-pointer hover:bg-green-300  ">
               Renew Applied
             </span>
           }
@@ -162,6 +169,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       ) : (
         ""
       )}{" "}
+      {status === Status.Accepted ? <ReadProposals isReadMore={submitProof.length > 0} /> : ""}
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center space-x-2 text-gray-500">
           <BsCalendarCheck />

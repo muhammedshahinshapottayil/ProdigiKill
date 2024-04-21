@@ -111,16 +111,13 @@ export function handleProposalStatusChange(event: Evt__Change__Status): void {
 
 export function handleRenewAccepted(event: Evt__Renew__Accepted): void {
   const proposal = Proposal.load(event.params.id.toHexString());
-  if (proposal !== null) {
-    proposal.finalDate = event.params.date;
-    proposal.updatedAt = event.block.timestamp;
-    proposal.save();
-  }
-
   const renew = RequestRenewal.load(event.params.id.toHexString());
-  if (renew !== null) {
+  if (proposal !== null && renew !== null) {
+    proposal.finalDate = renew.date;
+    proposal.updatedAt = event.block.timestamp;
     renew.status = event.params.status;
     renew.updatedAt = event.block.timestamp;
+    proposal.save();
     renew.save();
   }
 }

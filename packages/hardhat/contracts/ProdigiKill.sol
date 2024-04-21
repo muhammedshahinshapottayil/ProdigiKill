@@ -77,7 +77,7 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 
 	event Evt__Change__Status(uint256 indexed id, Status status);
 
-	event Evt__Renew__Accepted(uint256 indexed id, Status status, uint256 date);
+	event Evt__Renew__Accepted(uint256 indexed id, Status status);
 
 	event Evt__Renew__Rejected(uint256 indexed id, Status status);
 
@@ -297,7 +297,7 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		Tasks memory task = getTaskById(id);
 		if (task.status != Status.Accepted) revert Err__Renew__Acceptance(id);
 		s_prodigiUsers[id].date = date;
-		emit Evt__Renew__Accepted(id, Status.Accepted, date);
+		emit Evt__Renew__Accepted(id, Status.Accepted);
 	}
 
 	function rejectRenewApplication(

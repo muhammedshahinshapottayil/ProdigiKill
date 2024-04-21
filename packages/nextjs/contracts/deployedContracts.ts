@@ -7,7 +7,7 @@ import { GenericContractsDeclaration } from "~~/utils/scaffold-eth/contract";
 const deployedContracts = {
   31337: {
     ProdigiKill: {
-      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+      address: "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE",
       abi: [
         {
           inputs: [],
@@ -323,12 +323,6 @@ const deployedContracts = {
               internalType: "enum ProdigiKill.Status",
               name: "status",
               type: "uint8",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "date",
-              type: "uint256",
             },
           ],
           name: "Evt__Renew__Accepted",

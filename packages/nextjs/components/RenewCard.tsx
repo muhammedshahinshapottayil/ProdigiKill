@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LikeButton from "./LikeButton";
-import { fromUnixTime } from "date-fns";
+import { format, fromUnixTime, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
 import Modal from "react-modal";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
@@ -25,6 +25,9 @@ function RenewCard({
   const dateFinal = fromUnixTime(date);
   const dateCreated = fromUnixTime(createdAt);
 
+  const formattedFinalDate = format(parseISO(dateFinal.toISOString()), "MMM d, yyyy");
+  const formattedCreatedAt = format(parseISO(dateCreated.toISOString()), "MMM d, yyyy");
+
   const { writeAsync: rateRenewApplication } = useScaffoldContractWrite({
     contractName: "ProdigiKill",
     functionName: "rateRenewApplication",
@@ -48,7 +51,7 @@ function RenewCard({
     <div className="max-h-96 min-h-60 min-w-lg max-w-lg">
       <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between ">
         <div>
-          <span>{dateCreated.toString()}</span>
+          <span>{formattedCreatedAt.toString()}</span>
           <div className="flex justify-between items-center mt-1 mb-4">
             <h3 className="text-lg font-bold">Renew Request</h3>
             <span
@@ -68,7 +71,7 @@ function RenewCard({
         <div className="mt-4 flex justify-between items-center">
           <div className="flex items-center space-x-2 text-gray-500">
             <BsCalendarCheck />
-            <span>{dateFinal.toString()}</span>
+            <span>{formattedFinalDate.toString()}</span>
           </div>
           {currentUser !== userAddress ? <LikeButton handleLike={handleLike} isLiked={isLiked} /> : ""}
         </div>
