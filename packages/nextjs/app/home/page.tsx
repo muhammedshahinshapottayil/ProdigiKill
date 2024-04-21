@@ -10,24 +10,36 @@ import {
   PROPOSAL_ACCEPTED_GRAPHQL,
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  USER_PROPOSAL_ACCEPTED_GRAPHQL,
+  USER_PROPOSAL_PENDING_GRAPHQL,
+  USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
 } from "~~/services/graphQL/queries";
 import { Proposal, Status } from "~~/types/utils";
 
 const HomePage: React.FC = () => {
   const { address } = useAccount();
-
   const [IsLoading, setIsLoading] = useState<boolean>(true);
   const [DataLoading, setDataLoading] = useState<boolean>(true);
-
+  const [toggle, setToggle] = useState<boolean>(false);
   const [status, setStatus] = useState<Status>(Status.Pending);
 
   const PROPOSAL_GQL = gql(
-    status === Status.Pending
-      ? PROPOSAL_PENDING_GRAPHQL
-      : status === Status.Accepted
-      ? PROPOSAL_ACCEPTED_GRAPHQL
-      : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
-      ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+    toggle === false
+      ? status === Status.Pending
+        ? PROPOSAL_PENDING_GRAPHQL
+        : status === Status.Accepted
+        ? PROPOSAL_ACCEPTED_GRAPHQL
+        : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
+        ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+        : ""
+      : toggle === true
+      ? status === Status.Pending
+        ? USER_PROPOSAL_PENDING_GRAPHQL
+        : status === Status.Accepted
+        ? USER_PROPOSAL_ACCEPTED_GRAPHQL
+        : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
+        ? USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+        : ""
       : "",
   );
   const currentDate = Math.floor(Date.now() / 1000);
@@ -50,7 +62,7 @@ const HomePage: React.FC = () => {
     <Spinner />
   ) : (
     <div className="bg-gray-100 min-h-screen">
-      <StatusTabs status={status} setStatus={setStatus} />
+      <StatusTabs setToggle={setToggle} toggle={toggle} status={status} setStatus={setStatus} />
 
       <div className="container mx-auto py-8">
         {!DataLoading ? (

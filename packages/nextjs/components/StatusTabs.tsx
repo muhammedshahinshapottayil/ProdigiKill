@@ -1,14 +1,47 @@
+import { ChangeEvent } from "react";
 import { SetStateProp, Status } from "~~/types/utils";
 
-function StatusTabs({ setStatus, status }: { status: Status; setStatus: SetStateProp<Status> }) {
+function StatusTabs({
+  setStatus,
+  status,
+  setToggle,
+  toggle,
+}: {
+  status: Status;
+  toggle: boolean;
+  setStatus: SetStateProp<Status>;
+  setToggle: SetStateProp<boolean>;
+}) {
   const handleStatusChange = (status: Status) => {
     setStatus(status);
   };
 
+  const handleToggle = (checked: boolean) => {
+    setToggle(checked);
+  };
+
   return (
-    <header className="bg-gradient-to-r from-indigo-600 to-purple-800 text-white py-6 px-4">
-      <h1 className="text-center text-2xl font-bold mb-4">A Platform to Combat Procrastination</h1>
-      <div className="flex flex-wrap justify-center gap-4">
+    <header className="bg-gradient-to-r from-indigo-600 to-purple-800 text-white py-6 px-4 md:px-8 relative">
+      <div className="flex justify-end mb-4 md:mb-6">
+        <div className="absolute top-4 right-4">
+          <label htmlFor="toogleA" className="flex items-center cursor-pointer">
+            <div className="relative">
+              <input
+                id="toogleA"
+                checked={toggle}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => handleToggle(e.target.checked)}
+                type="checkbox"
+                className="sr-only"
+              />
+              <div className="w-10 h-4 bg-gray-400 rounded-full shadow-inner"></div>
+              <div className="dot absolute w-6 h-6 bg-white rounded-full shadow -left-1 -top-1 transition"></div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <h1 className="text-xl md:text-2xl font-bold text-center">A Platform to Combat Procrastination</h1>
+      <div className="flex flex-wrap justify-center gap-4 mt-4">
         <button
           onClick={() => handleStatusChange(Status.Pending)}
           className={`px-4 py-2 rounded-lg transition-colors duration-300 ${

@@ -30,3 +30,8 @@ p {
 .btn.btn-ghost {
   @apply shadow-none;
 }
+
+input:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: #48bb78;
+}
