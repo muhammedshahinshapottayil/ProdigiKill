@@ -1,4 +1,6 @@
 import { ChangeEvent } from "react";
+import CustomModal from "./CustomModal";
+import PostProposal from "./PostProposal";
 import { SetStateProp, Status } from "~~/types/utils";
 
 function StatusTabs({
@@ -22,6 +24,26 @@ function StatusTabs({
 
   return (
     <header className="bg-gradient-to-r from-indigo-600 to-purple-800 text-white py-6 px-4 md:px-8 relative">
+      {toggle ? (
+        <div>
+          <CustomModal
+            clickElement={
+              <button
+                className={`px-4 py-2 rounded-lg transition-colors duration-300  font-semibold
+           bg-green-600 hover:bg-green-500`}
+              >
+                Apply
+              </button>
+            }
+          >
+            <div>
+              <PostProposal />
+            </div>
+          </CustomModal>
+        </div>
+      ) : (
+        ""
+      )}
       <div className="flex justify-end mb-4 md:mb-6">
         <div className="absolute top-4 right-4">
           <label htmlFor="toogleA" className="flex items-center cursor-pointer">

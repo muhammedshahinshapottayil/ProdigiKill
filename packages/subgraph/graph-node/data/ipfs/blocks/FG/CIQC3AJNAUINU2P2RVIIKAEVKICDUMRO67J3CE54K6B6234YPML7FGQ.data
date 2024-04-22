@@ -1,0 +1,108 @@
+
+ñétype Proposal @entity {
+  id: ID!
+  userAddress: Bytes!
+  title: String!
+  details: String!
+  createdAt: BigInt!
+  finalDate: BigInt!
+  withdrawal: Boolean!
+  status: Int!
+  transactionHash: String!
+  updatedAt: BigInt
+  proposalRating: [ProposalRating!]! @derivedFrom(field: "ProposalID")
+  renewRequest: [RequestRenewal!]! @derivedFrom(field: "ProposalID")
+  submitProof: [SubmitProof!]! @derivedFrom(field: "ProposalID")
+}
+
+type ProposalRating @entity {
+  id: ID!
+  ProposalID: Proposal!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type RequestRenewal @entity {
+  id: ID!
+  ProposalID: Proposal!
+  userAddress: Bytes!
+  reason: String!
+  date: BigInt!
+  status: Int!
+  renewalRating: [RenewRating!]! @derivedFrom(field: "ProposalID")
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type RenewRating @entity {
+  id: ID!
+  ProposalID: RequestRenewal!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type SubmitProof @entity {
+  id: ID!
+  ProposalID: Proposal!
+  userAddress: Bytes!
+  proof: String!
+  status: Int!
+  submitRating: [SubmitRating!]! @derivedFrom(field: "ProposalID")
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type SubmitRating @entity {
+  id: ID!
+  ProposalID: SubmitProof!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type BlackListed @entity {
+  id: ID!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type Donations @entity {
+  id: ID!
+  address: Bytes!
+  value: BigInt!
+  createdAt: BigInt!
+}
+
+type ProposalIdea @entity {
+  id: ID!
+  address: Bytes!
+  title: String!
+  details: String!
+  createdAt: BigInt!
+  winner: Boolean
+  winningDate: BigInt
+  rating: [ProposalIdeaRating!]! @derivedFrom(field: "ProposalID")
+}
+
+type ProposalIdeaRating @entity {
+  id: ID!
+  ProposalID: ProposalIdea!
+  userAddress: Bytes!
+  status: Boolean!
+  createdAt: BigInt!
+  updatedAt: BigInt
+}
+
+type Winner @entity {
+  id: ID!
+  ProposalID: ProposalIdea!
+  address: Bytes!
+  createdAt: BigInt!
+}
+é

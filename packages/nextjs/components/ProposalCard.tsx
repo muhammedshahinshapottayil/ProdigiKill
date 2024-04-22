@@ -76,18 +76,22 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   });
 
   const handleLike = async () => {
-    setIsLiked(likeStatus => !likeStatus);
-    setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
-    switch (status) {
-      case Status.Pending:
-        await rateApplication();
-        break;
-      case Status.Accepted:
-        await rateCompletedProof();
-        break;
-      default:
-        notification.error("Something went wrong");
-        break;
+    try {
+      setIsLiked(likeStatus => !likeStatus);
+      setNoOfLikes(currentNumber => (!isLiked ? ++currentNumber : --currentNumber));
+      switch (status) {
+        case Status.Pending:
+          await rateApplication();
+          break;
+        case Status.Accepted:
+          await rateCompletedProof();
+          break;
+        default:
+          notification.error("Something went wrong");
+          break;
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -100,9 +104,11 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           </button>
         }
       >
-        <p className={`text-gray-600`}>
-          {status === Status.Accepted && submitProof.length > 0 ? submitProof[0].proof : details}
-        </p>
+        <div className="max-h-96 min-h-60 min-w-lg max-w-lg">
+          <p className={`text-gray-600`}>
+            {status === Status.Accepted && submitProof.length > 0 ? submitProof[0].proof : details}
+          </p>
+        </div>
       </CustomModal>
     );
 
@@ -115,7 +121,9 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           </button>
         }
       >
-        <p className={`text-gray-600`}>{details}</p>
+        <div className="max-h-96 min-h-60 min-w-lg max-w-lg">
+          <p className={`text-gray-600`}>{details}</p>
+        </div>
       </CustomModal>
     );
 
@@ -175,7 +183,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           <BsCalendarCheck />
           <span>{formattedFinalDate.toString()}</span>
         </div>
-        {userAddress !== currentAddress ? (
+        {userAddress.toLowerCase() !== currentAddress.toLowerCase() ? (
           status === Status.Pending || (status === Status.Accepted && submitProof.length > 0) ? (
             <LikeButton handleLike={handleLike} isLiked={isLiked} />
           ) : (

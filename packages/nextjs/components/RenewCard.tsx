@@ -2,12 +2,9 @@ import { useState } from "react";
 import LikeButton from "./LikeButton";
 import { format, fromUnixTime, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
-import Modal from "react-modal";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { RenewRequest } from "~~/types/utils";
 import { getID } from "~~/utils";
-
-Modal.setAppElement("#root");
 
 function RenewCard({
   date,

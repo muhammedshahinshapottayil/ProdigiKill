@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
   const [status, setStatus] = useState<Status>(Status.Pending);
 
   const PROPOSAL_GQL = gql(
-    toggle === false
+    !toggle
       ? status === Status.Pending
         ? PROPOSAL_PENDING_GRAPHQL
         : status === Status.Accepted
@@ -32,7 +32,7 @@ const HomePage: React.FC = () => {
         : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
         ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
         : ""
-      : toggle === true
+      : toggle
       ? status === Status.Pending
         ? USER_PROPOSAL_PENDING_GRAPHQL
         : status === Status.Accepted
