@@ -1,6 +1,5 @@
 import { useState } from "react";
 import CustomTextArea from "./CustomTextArea";
-import { parseEther } from "viem";
 import { useAccount } from "wagmi";
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { getID } from "~~/utils";
@@ -15,7 +14,6 @@ function PostSubmit({ id }: { id: string }) {
     contractName: "ProdigiKill",
     functionName: "submitProof",
     args: [getID(id), details],
-    value: parseEther("0.05"),
     blockConfirmations: 1,
     onBlockConfirmation: txnReceipt => {
       console.log("Transaction blockHash", txnReceipt.blockHash);
@@ -25,7 +23,6 @@ function PostSubmit({ id }: { id: string }) {
   const submitProposal = async () => {
     try {
       if (!address) notification.error("Connect wallet");
-
       if (details) {
         await submitProof();
         clearAll();

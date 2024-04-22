@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import CustomModal from "./CustomModal";
 import LikeButton from "./LikeButton";
 import PostRenewal from "./PostRenewal";
+import PostSubmit from "./PostSubmit";
 import RenewCard from "./RenewCard";
 import { format, fromUnixTime, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
@@ -194,19 +195,21 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         ""
       )}{" "}
       {status === Status.Accepted ? <ReadProposals isReadMore={submitProof.length > 0} /> : ""}
-      {toggle && status === Status.Accepted && submitProof.length === 0 ? (
-        <CustomModal
-          clickElement={
-            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-300  ">
-              Submitted
-            </span>
-          }
-        >
-          <PostRenewal currentFinalDate={formattedFinalDate.toString()} id={id} />
-        </CustomModal>
-      ) : (
-        ""
-      )}
+      <div className="mt-2">
+        {toggle && status === Status.Accepted && submitProof.length === 0 ? (
+          <CustomModal
+            clickElement={
+              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-300  ">
+                Submit Proof
+              </span>
+            }
+          >
+            <PostSubmit id={id} />
+          </CustomModal>
+        ) : (
+          ""
+        )}
+      </div>
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center space-x-2 text-gray-500">
           <BsCalendarCheck />
