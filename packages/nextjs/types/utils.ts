@@ -23,6 +23,7 @@ export interface ProposalCardProps {
   rating?: Rating[];
   renewRequest?: RenewRequest[];
   submitProof?: SubmitProof[];
+  toggle: boolean;
 }
 
 type ProposalRating = {

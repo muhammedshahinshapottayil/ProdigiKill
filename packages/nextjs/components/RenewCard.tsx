@@ -70,7 +70,11 @@ function RenewCard({
             <BsCalendarCheck />
             <span>{formattedFinalDate.toString()}</span>
           </div>
-          {currentUser !== userAddress ? <LikeButton handleLike={handleLike} isLiked={isLiked} /> : ""}
+          {currentUser.toLowerCase() !== userAddress.toLowerCase() ? (
+            <LikeButton handleLike={handleLike} isLiked={isLiked} />
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

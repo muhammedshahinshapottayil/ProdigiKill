@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import CustomModal from "./CustomModal";
 import LikeButton from "./LikeButton";
+import PostRenewal from "./PostRenewal";
 import RenewCard from "./RenewCard";
 import { format, fromUnixTime, parseISO } from "date-fns";
 import { BsCalendarCheck } from "react-icons/bs";
@@ -20,6 +21,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   status,
   currentAddress,
   userAddress,
+  toggle,
   userRatingStatus = [],
   rating = [],
   submitProof = [],
@@ -155,29 +157,56 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           <ReadMore isReadMore={details.length > 100} />
         )}
       </div>
-      {renewRequest.length > 0 ? (
-        <CustomModal
-          clickElement={
-            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 cursor-pointer hover:bg-green-300  ">
-              Renew Applied
-            </span>
-          }
-        >
-          <RenewCard
-            createdAt={renewRequest[0].createdAt}
-            currentUser={currentAddress}
-            date={renewRequest[0].date}
-            id={id}
-            reason={renewRequest[0].reason}
-            renewalRating={renewRequest[0].renewalRating}
-            userAddress={userAddress}
-            userLiked={renewRequest[0].userLiked}
-          />
-        </CustomModal>
+      {status !== Status.Pending ? (
+        renewRequest.length > 0 ? (
+          <CustomModal
+            clickElement={
+              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 cursor-pointer hover:bg-green-300  ">
+                Renewal Applied
+              </span>
+            }
+          >
+            <RenewCard
+              createdAt={renewRequest[0].createdAt}
+              currentUser={currentAddress}
+              date={renewRequest[0].date}
+              id={id}
+              reason={renewRequest[0].reason}
+              renewalRating={renewRequest[0].renewalRating}
+              userAddress={userAddress}
+              userLiked={renewRequest[0].userLiked}
+            />
+          </CustomModal>
+        ) : toggle && status === Status.Accepted ? (
+          <CustomModal
+            clickElement={
+              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 cursor-pointer hover:bg-green-300  ">
+                Apply Renewal
+              </span>
+            }
+          >
+            <PostRenewal currentFinalDate={formattedFinalDate.toString()} id={id} />
+          </CustomModal>
+        ) : (
+          ""
+        )
       ) : (
         ""
       )}{" "}
       {status === Status.Accepted ? <ReadProposals isReadMore={submitProof.length > 0} /> : ""}
+      {toggle && status === Status.Accepted && submitProof.length === 0 ? (
+        <CustomModal
+          clickElement={
+            <span className="px-2 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 cursor-pointer hover:bg-blue-300  ">
+              Submitted
+            </span>
+          }
+        >
+          <PostRenewal currentFinalDate={formattedFinalDate.toString()} id={id} />
+        </CustomModal>
+      ) : (
+        ""
+      )}
       <div className="mt-4 flex justify-between items-center">
         <div className="flex items-center space-x-2 text-gray-500">
           <BsCalendarCheck />

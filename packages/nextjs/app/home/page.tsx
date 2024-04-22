@@ -85,6 +85,7 @@ const HomePage: React.FC = () => {
                     currentAddress={address ?? ""}
                     renewRequest={item?.renewRequest}
                     submitProof={item?.submitProof}
+                    toggle={toggle}
                     key={item.transactionHash}
                   />
                 ))}
