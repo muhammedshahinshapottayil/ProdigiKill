@@ -86,6 +86,7 @@ const HomePage: React.FC = () => {
                     renewRequest={item?.renewRequest}
                     submitProof={item?.submitProof}
                     toggle={toggle}
+                    withdrawStatus={item.withdrawal}
                     key={item.transactionHash}
                   />
                 ))}

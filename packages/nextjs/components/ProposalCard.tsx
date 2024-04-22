@@ -23,6 +23,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
   currentAddress,
   userAddress,
   toggle,
+  withdrawStatus,
   userRatingStatus = [],
   rating = [],
   submitProof = [],
@@ -64,6 +65,26 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     },
   });
 
+  const { writeAsync: withdrawCollateral } = useScaffoldContractWrite({
+    contractName: "ProdigiKill",
+    functionName: "withdrawCollateral",
+    args: [getID(id)],
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+
+  const { writeAsync: withdrawReward } = useScaffoldContractWrite({
+    contractName: "ProdigiKill",
+    functionName: "withdrawReward",
+    args: [getID(id)],
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+
   const { writeAsync: rateCompletedProof } = useScaffoldContractWrite({
     contractName: "ProdigiKill",
     functionName: "rateCompletedProof",
@@ -93,6 +114,16 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
           notification.error("Something went wrong");
           break;
       }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const withdraw = async () => {
+    try {
+      if (!toggle) return;
+      if (status === Status.Rejected) await withdrawCollateral();
+      if (status === Status.Completed) await withdrawReward();
     } catch (error) {
       console.error(error);
     }
@@ -196,6 +227,20 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
       )}{" "}
       {status === Status.Accepted ? <ReadProposals isReadMore={submitProof.length > 0} /> : ""}
       <div className="mt-2">
+        {toggle && !withdrawStatus ? (
+          status === Status.Rejected || status === Status.Completed ? (
+            <span
+              onClick={withdraw}
+              className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 cursor-pointer hover:bg-red-300  "
+            >
+              Withdraw
+            </span>
+          ) : (
+            ""
+          )
+        ) : (
+          ""
+        )}
         {toggle && status === Status.Accepted && submitProof.length === 0 ? (
           <CustomModal
             clickElement={

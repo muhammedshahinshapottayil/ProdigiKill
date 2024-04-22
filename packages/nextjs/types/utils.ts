@@ -24,6 +24,7 @@ export interface ProposalCardProps {
   renewRequest?: RenewRequest[];
   submitProof?: SubmitProof[];
   toggle: boolean;
+  withdrawStatus: boolean;
 }
 
 type ProposalRating = {
