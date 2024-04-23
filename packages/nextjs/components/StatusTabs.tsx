@@ -1,6 +1,6 @@
 import { ChangeEvent } from "react";
-import CustomModal from "./CustomModal";
-import PostProposal from "./PostProposal";
+import { PostProposal } from "./contract-action-comps";
+import { CustomModal } from "./custom-common";
 import { SetStateProp, Status } from "~~/types/utils";
 
 function StatusTabs({
