@@ -1,5 +1,221 @@
-function page() {
-  return <div>page</div>;
-}
+"use client";
 
-export default page;
+import React, { useMemo, useState } from "react";
+import { gql, useQuery } from "@apollo/client";
+import { useGlobalFilter, usePagination, useSortBy, useTable } from "react-table";
+import { useAccount } from "wagmi";
+import {
+  ADMIN_PROPOSAL_PENDING_GRAPHQL,
+  PROPOSAL_ACCEPTED_GRAPHQL,
+  PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+} from "~~/services/graphQL/queries";
+import { Proposal, Status } from "~~/types/utils";
+import { PROPOSAL_PENDING_COLUMNS } from "~~/utils";
+
+const HomePage: React.FC = () => {
+  const { address } = useAccount();
+  const [IsLoading, setIsLoading] = useState<boolean>(true);
+  const [, setDataLoading] = useState<boolean>(true);
+  const [status] = useState<Status>(Status.Pending);
+
+  const PROPOSAL_GQL = gql(
+    status === Status.Pending
+      ? ADMIN_PROPOSAL_PENDING_GRAPHQL
+      : status === Status.Accepted
+      ? PROPOSAL_ACCEPTED_GRAPHQL
+      : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
+      ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+      : "",
+  );
+  const currentDate = Math.floor(Date.now() / 1000);
+  const { data: proposalData, loading } = useQuery(PROPOSAL_GQL, {
+    variables: { address, currentDate, status },
+    fetchPolicy: "network-only",
+  });
+
+  const data: Proposal[] = useMemo(() => {
+    if (IsLoading) setIsLoading(false);
+    setDataLoading(true);
+    if (proposalData && !loading && address && status in Status) {
+      setDataLoading(false);
+      return proposalData.proposals.length > 0 ? proposalData.proposals : [];
+    }
+    return [];
+  }, [proposalData, loading, address, status, IsLoading]);
+
+  const columns: any = useMemo(() => {
+    return Status.Pending === status ? PROPOSAL_PENDING_COLUMNS : [];
+  }, [status]);
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    state,
+    setGlobalFilter,
+    prepareRow,
+    gotoPage,
+    setPageSize,
+  }: any = useTable(
+    {
+      columns,
+      data,
+      initialState: {
+        hiddenColumns: [""],
+      },
+    },
+    useGlobalFilter,
+    useSortBy,
+    usePagination,
+  );
+  const { globalFilter, pageSize }: any = state;
+
+  const taskData = [
+    { id: 1, title: "Complete project proposal", status: "pending", deadline: "2023-06-15", user: "John Doe" },
+    { id: 2, title: "Research new technologies", status: "approved", deadline: "2023-07-01", user: "Jane Smith" },
+    { id: 3, title: "Launch marketing campaign", status: "completed", deadline: "2023-05-30", user: "Bob Johnson" },
+    { id: 4, title: "Attend team meeting", status: "overdue", deadline: "2023-04-20", user: "Alice Williams" },
+  ];
+
+  const statusCounts = {
+    pending: taskData.filter(task => task.status === "pending").length,
+    approved: taskData.filter(task => task.status === "approved").length,
+    completed: taskData.filter(task => task.status === "completed").length,
+    overdue: taskData.filter(task => task.status === "overdue").length,
+  };
+
+  const totalUsers = [...new Set(taskData.map(task => task.user))].length;
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="bg-blue-500 text-white rounded-lg p-4">
+          <h3 className="text-lg font-bold mb-2">Pending</h3>
+          <p className="text-2xl">{statusCounts.pending}</p>
+        </div>
+        <div className="bg-green-500 text-white rounded-lg p-4">
+          <h3 className="text-lg font-bold mb-2">Approved</h3>
+          <p className="text-2xl">{statusCounts.approved}</p>
+        </div>
+        <div className="bg-yellow-500 text-white rounded-lg p-4">
+          <h3 className="text-lg font-bold mb-2">Completed</h3>
+          <p className="text-2xl">{statusCounts.completed}</p>
+        </div>
+        <div className="bg-red-500 text-white rounded-lg p-4">
+          <h3 className="text-lg font-bold mb-2">Overdue</h3>
+          <p className="text-2xl">{statusCounts.overdue}</p>
+        </div>
+        <div className="bg-purple-500 text-white rounded-lg p-4">
+          <h3 className="text-lg font-bold mb-2">Total Users</h3>
+          <p className="text-2xl">{totalUsers}</p>
+        </div>
+      </div>
+
+      <div className="mt-4 container mx-auto px-4 py-8 border rounded-md border-gray-500">
+        <div className="mb-4">
+          <input
+            onPaste={e => e.preventDefault()}
+            type="text"
+            value={globalFilter}
+            className="border border-gray-300 rounded px-3 py-2 w-full sm:w-auto"
+            placeholder="Search..."
+            onChange={e => setGlobalFilter(e.target.value)}
+          />
+        </div>
+        <div className="overflow-x-auto">
+          <table {...getTableProps()} className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">
+            <thead className="bg-gray-50">
+              {headerGroups.map((headerGroup: any, i: number) => (
+                <tr {...headerGroup.getHeaderGroupProps()} key={i}>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
+                  {headerGroup.headers.map((column: any, j: number) => (
+                    <th
+                      {...column.getHeaderProps(column.getSortByToggleProps())}
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                      key={j}
+                    >
+                      {column.render("Header")}
+                      <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody {...getTableBodyProps()}>
+              {page.map((row: any, i: number) => {
+                prepareRow(row);
+                return (
+                  <tr {...row.getRowProps()} key={i}>
+                    <td className="px-6 py-4 whitespace-nowrap">{++i}</td>
+                    {row.cells.map((cell: any, j: number) => (
+                      <td {...cell.getCellProps()} className="px-6 py-4 whitespace-nowrap" key={j}>
+                        {cell.render("Cell")}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+        <div className="flex items-center justify-between mt-4">
+          <div className="flex items-center">
+            <button
+              onClick={() => gotoPage(0)}
+              disabled={!canPreviousPage}
+              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {"<<"}
+            </button>
+            <button
+              onClick={() => previousPage()}
+              disabled={!canPreviousPage}
+              className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Previous
+            </button>
+            <button
+              onClick={() => nextPage()}
+              disabled={!canNextPage}
+              className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Next
+            </button>
+            <button
+              onClick={() => gotoPage(pageOptions.length - 1)}
+              disabled={!canNextPage}
+              className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {">>"}
+            </button>
+          </div>
+          <div>
+            <span className="text-sm text-gray-700">
+              Page <span className="font-medium">{state.pageIndex + 1}</span> of{" "}
+              <span className="font-medium">{pageOptions.length}</span>
+            </span>
+            <select
+              value={pageSize}
+              onChange={e => setPageSize(Number(e.target.value))}
+              className="ml-4 border border-gray-300 rounded text-sm text-gray-700 py-1 px-2"
+            >
+              {[10, 25, 50, 100].map(size => (
+                <option key={size} value={size}>
+                  Show {size}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default HomePage;

@@ -161,7 +161,21 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
     );
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between h-full">
+    <div
+      className={`bg-white rounded-lg shadow-md p-6 flex flex-col justify-between h-full border-l-4  ${
+        status === Status.Pending
+          ? `border-blue-500`
+          : status === Status.Accepted
+          ? `border-green-500`
+          : status === Status.Rejected
+          ? `border-red-500`
+          : status === Status.INCompleted
+          ? `border-yellow-500`
+          : status === Status.Completed
+          ? `border-purple-500`
+          : ""
+      }`}
+    >
       <div>
         <span>{formattedCreatedAt.toString()}</span>
         <div className="flex justify-between items-center mt-1 mb-4">

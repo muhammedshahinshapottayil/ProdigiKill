@@ -2233,6 +2233,7 @@ __metadata:
     "@types/react": ^18.0.9
     "@types/react-copy-to-clipboard": ^5.0.4
     "@types/react-modal": ^3
+    "@types/react-table": ^7
     "@typescript-eslint/eslint-plugin": ^5.39.0
     "@uniswap/sdk-core": ^4.0.1
     "@uniswap/v2-sdk": ^3.0.1
@@ -2258,6 +2259,7 @@ __metadata:
     react-icons: ^5.1.0
     react-modal: ^3.16.1
     react-spinners: ^0.13.8
+    react-table: ^7.8.0
     tailwindcss: ^3.3.3
     type-fest: ^4.6.0
     typescript: ^5.1.6
@@ -3032,6 +3034,15 @@ __metadata:
   dependencies:
     "@types/react": "*"
   checksum: 53c92dfbe46aae6f4ca4d96a166fd69a4b8dc539c5e8f755086dd1471656924ca6dd0a179be746c634686a0073aef67bb9615ee8600d9536cc1521b738e48453
+  languageName: node
+  linkType: hard
+
+"@types/react-table@npm:^7":
+  version: 7.7.20
+  resolution: "@types/react-table@npm:7.7.20"
+  dependencies:
+    "@types/react": "*"
+  checksum: 940b65995c54dd29a6d4a1023fb56343152938c0567a2766baf7edebd186e380a72c780cafeafabbf3d77ea4eacb384f0ec03f55daa0a82fd56064d437758be3
   languageName: node
   linkType: hard
 
@@ -13115,6 +13126,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 7ee8ef3aab74c7ae1d70ff34a27643d11ba1a8d62d072c767827d9ff9a520905223e567002e0bf6c772929d8ea1c781a3ba0cc4a563e92b1e3dc2eaa817ecbe8
+  languageName: node
+  linkType: hard
+
+"react-table@npm:^7.8.0":
+  version: 7.8.0
+  resolution: "react-table@npm:7.8.0"
+  peerDependencies:
+    react: ^16.8.3 || ^17.0.0-0 || ^18.0.0
+  checksum: 44ca0fb848c6869cd793cede8dc33072b38ebb8f8d2833565afe7cf3eac5d1fa455ac5fb9d06838b16fab0523d5d03e3e82f7645032f71245096e67b892313b9
   languageName: node
   linkType: hard
 

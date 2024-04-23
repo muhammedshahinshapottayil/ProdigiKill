@@ -186,6 +186,29 @@ query MyQuery($status:Int!,$address: String!) {
 }
 `;
 
+const ADMIN_PROPOSAL_PENDING_GRAPHQL = `
+query MyQuery( $currentDate: BigInt!,$status:Int) {
+  proposals(where: {finalDate_gt: $currentDate, withdrawal: false,status:$status}
+    orderBy: createdAt
+    orderDirection: asc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
+  }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -193,4 +216,5 @@ export {
   USER_PROPOSAL_PENDING_GRAPHQL,
   USER_PROPOSAL_ACCEPTED_GRAPHQL,
   USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  ADMIN_PROPOSAL_PENDING_GRAPHQL,
 };

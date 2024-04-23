@@ -66,7 +66,7 @@ function StatusTabs({
       <div className="flex flex-wrap justify-center gap-4 mt-4">
         <button
           onClick={() => handleStatusChange(Status.Pending)}
-          className={`px-4 py-2 rounded-lg transition-colors duration-300 ${
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
             status === Status.Pending ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
@@ -74,7 +74,7 @@ function StatusTabs({
         </button>
         <button
           onClick={() => handleStatusChange(Status.Accepted)}
-          className={`px-4 py-2 rounded-lg transition-colors duration-300 ${
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
             status === Status.Accepted ? "bg-green-500 hover:bg-green-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
@@ -82,7 +82,7 @@ function StatusTabs({
         </button>
         <button
           onClick={() => handleStatusChange(Status.Rejected)}
-          className={`px-4 py-2 rounded-lg transition-colors duration-300 ${
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
             status === Status.Rejected ? "bg-red-500 hover:bg-red-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
@@ -90,16 +90,16 @@ function StatusTabs({
         </button>
         <button
           onClick={() => handleStatusChange(Status.INCompleted)}
-          className={`px-4 py-2 rounded-lg transition-colors duration-300 ${
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
             status === Status.INCompleted ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
-          In Complete
+          Overdue
         </button>
         <button
           onClick={() => handleStatusChange(Status.Completed)}
-          className={`px-4 py-2 rounded-lg transition-colors duration-300 ${
-            status === Status.Completed ? "bg-pink-500 hover:bg-pink-600" : "bg-gray-700 hover:bg-gray-600"
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
+            status === Status.Completed ? "bg-purple-500 hover:bg-purple-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Completed
