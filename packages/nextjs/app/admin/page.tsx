@@ -4,47 +4,68 @@ import React, { useMemo, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useGlobalFilter, usePagination, useSortBy, useTable } from "react-table";
 import { useAccount } from "wagmi";
+import { BulkAcceptButton, BulkRejectButton } from "~~/components/bulk-action-button";
+import { CustomCheckBox } from "~~/components/custom-common";
+import { AdminStatusTabs } from "~~/components/tabs";
 import {
+  ADMIN_PROPOSAL_ACCEPTED,
+  ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED,
   ADMIN_PROPOSAL_PENDING_GRAPHQL,
-  PROPOSAL_ACCEPTED_GRAPHQL,
-  PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  ADMIN_PROPOSAL_REJECT,
 } from "~~/services/graphQL/queries";
 import { Proposal, Status } from "~~/types/utils";
-import { PROPOSAL_PENDING_COLUMNS } from "~~/utils";
+import {
+  PROPOSAL_ACCEPTED_COLUMNS,
+  PROPOSAL_COMPLETED_OR_IN_COMPLETED_COLUMNS,
+  PROPOSAL_PENDING_COLUMNS,
+  PROPOSAL_REJECT_COLUMNS,
+  getID,
+} from "~~/utils";
 
 const HomePage: React.FC = () => {
   const { address } = useAccount();
   const [IsLoading, setIsLoading] = useState<boolean>(true);
-  const [, setDataLoading] = useState<boolean>(true);
-  const [status] = useState<Status>(Status.Pending);
+  const [Ids, setIds] = useState<bigint[]>([]);
+  const [validateIds, setValidateIds] = useState<string[]>([]);
+
+  const [status, setStatus] = useState<Status>(Status.Pending);
 
   const PROPOSAL_GQL = gql(
     status === Status.Pending
       ? ADMIN_PROPOSAL_PENDING_GRAPHQL
       : status === Status.Accepted
-      ? PROPOSAL_ACCEPTED_GRAPHQL
-      : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
-      ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+      ? ADMIN_PROPOSAL_ACCEPTED
+      : status === Status.Rejected
+      ? ADMIN_PROPOSAL_REJECT
+      : status === Status.Completed || status === Status.INCompleted
+      ? ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED
       : "",
   );
+
   const currentDate = Math.floor(Date.now() / 1000);
   const { data: proposalData, loading } = useQuery(PROPOSAL_GQL, {
-    variables: { address, currentDate, status },
+    variables: { currentDate, status },
     fetchPolicy: "network-only",
   });
 
   const data: Proposal[] = useMemo(() => {
     if (IsLoading) setIsLoading(false);
-    setDataLoading(true);
     if (proposalData && !loading && address && status in Status) {
-      setDataLoading(false);
       return proposalData.proposals.length > 0 ? proposalData.proposals : [];
     }
     return [];
   }, [proposalData, loading, address, status, IsLoading]);
 
   const columns: any = useMemo(() => {
-    return Status.Pending === status ? PROPOSAL_PENDING_COLUMNS : [];
+    return Status.Pending === status
+      ? PROPOSAL_PENDING_COLUMNS
+      : Status.Accepted === status
+      ? PROPOSAL_ACCEPTED_COLUMNS
+      : Status.Rejected === status
+      ? PROPOSAL_REJECT_COLUMNS
+      : Status.Completed === status || Status.INCompleted === status
+      ? PROPOSAL_COMPLETED_OR_IN_COMPLETED_COLUMNS
+      : [];
   }, [status]);
 
   const {
@@ -75,6 +96,18 @@ const HomePage: React.FC = () => {
     usePagination,
   );
   const { globalFilter, pageSize }: any = state;
+
+  const handleChecking = (status: boolean, value: string) => {
+    const id = getID(value);
+    if (status) {
+      setIds(state => [...state, id]);
+      setValidateIds(state => [...state, value]);
+    }
+    if (!status) {
+      setIds(state => state.filter((item: bigint) => item !== id));
+      setValidateIds(state => state.filter((item: string) => item !== value));
+    }
+  };
 
   const taskData = [
     { id: 1, title: "Complete project proposal", status: "pending", deadline: "2023-06-15", user: "John Doe" },
@@ -108,7 +141,7 @@ const HomePage: React.FC = () => {
           <p className="text-2xl">{statusCounts.completed}</p>
         </div>
         <div className="bg-red-500 text-white rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">Overdue</h3>
+          <h3 className="text-lg font-bold mb-2">IN COMPLETED</h3>
           <p className="text-2xl">{statusCounts.overdue}</p>
         </div>
         <div className="bg-purple-500 text-white rounded-lg p-4">
@@ -117,16 +150,24 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
+      <AdminStatusTabs setStatus={setStatus} status={status} />
+
       <div className="mt-4 container mx-auto px-4 py-8 border rounded-md border-gray-500">
-        <div className="mb-4">
-          <input
-            onPaste={e => e.preventDefault()}
-            type="text"
-            value={globalFilter}
-            className="border border-gray-300 rounded px-3 py-2 w-full sm:w-auto"
-            placeholder="Search..."
-            onChange={e => setGlobalFilter(e.target.value)}
-          />
+        <div className="flex justify-between">
+          <div className="mb-4">
+            <input
+              onPaste={e => e.preventDefault()}
+              type="text"
+              value={globalFilter}
+              className="border border-gray-300 rounded px-3 py-2 w-full sm:w-auto"
+              placeholder="Search..."
+              onChange={e => setGlobalFilter(e.target.value)}
+            />
+          </div>
+          <div className="mb-4 flex justify-around">
+            {status === Status.Pending ? <BulkAcceptButton ids={Ids} /> : ""}
+            {status === Status.Pending ? <BulkRejectButton ids={Ids} /> : ""}
+          </div>
         </div>
         <div className="overflow-x-auto">
           <table {...getTableProps()} className="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded">
@@ -144,6 +185,16 @@ const HomePage: React.FC = () => {
                       <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                     </th>
                   ))}
+                  {status === Status.Pending ? (
+                    <th
+                      key={i}
+                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                    >
+                      Bulk Actions
+                    </th>
+                  ) : (
+                    ""
+                  )}
                 </tr>
               ))}
             </thead>
@@ -151,13 +202,26 @@ const HomePage: React.FC = () => {
               {page.map((row: any, i: number) => {
                 prepareRow(row);
                 return (
-                  <tr {...row.getRowProps()} key={i}>
+                  <tr {...row.getRowProps()} key={row.values.id}>
                     <td className="px-6 py-4 whitespace-nowrap">{++i}</td>
-                    {row.cells.map((cell: any, j: number) => (
-                      <td {...cell.getCellProps()} className="px-6 py-4 whitespace-nowrap" key={j}>
+                    {row.cells.map((cell: any) => (
+                      <td {...cell.getCellProps()} className="px-6 py-4 whitespace-nowrap" key={cell.value}>
                         {cell.render("Cell")}
                       </td>
                     ))}
+                    {status === Status.Pending ? (
+                      <td key={i} className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <CustomCheckBox
+                            status={validateIds.includes(row.values.id)}
+                            value={row.values.id}
+                            onChange={handleChecking}
+                          />
+                        </div>
+                      </td>
+                    ) : (
+                      ""
+                    )}
                   </tr>
                 );
               })}

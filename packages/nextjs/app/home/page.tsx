@@ -4,8 +4,8 @@ import React, { useMemo, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useAccount } from "wagmi";
 import Spinner from "~~/components/Spinner";
-import StatusTabs from "~~/components/StatusTabs";
 import { ProposalCard } from "~~/components/cards";
+import { StatusTabs } from "~~/components/tabs";
 import {
   PROPOSAL_ACCEPTED_GRAPHQL,
   PROPOSAL_PENDING_GRAPHQL,

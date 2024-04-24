@@ -35,3 +35,11 @@ input:checked ~ .dot {
   transform: translateX(100%);
   background-color: #48bb78;
 }
+
+.custom-checkbox {
+  @apply w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500;
+}
+
+.custom-checkbox:checked {
+  @apply bg-blue-600 border-blue-600 focus:ring-blue-600;
+}

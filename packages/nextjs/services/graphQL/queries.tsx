@@ -209,6 +209,101 @@ query MyQuery( $currentDate: BigInt!,$status:Int) {
 }
 `;
 
+const ADMIN_PROPOSAL_ACCEPTED = `
+query MyQuery($currentDate: BigInt!,$status:Int!) {
+  proposals(where: {finalDate_gt: $currentDate, withdrawal: false,status:$status}
+    orderBy: updatedAt
+    orderDirection: asc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    renewRequest{
+      userAddress
+      reason
+      date
+      createdAt
+      renewalRating(where: {status: true}){
+        status
+      }
+    }
+    submitProof{
+      proof
+      createdAt
+      submitRating(where: {status: true}){
+        status
+      }
+    }
+  }
+}
+`;
+
+const ADMIN_PROPOSAL_REJECT = `
+query MyQuery($status:Int!) {
+  proposals(where: {status:$status}
+    orderBy: updatedAt
+    orderDirection: desc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
+  }
+}
+`;
+
+const ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED = `
+query MyQuery($status:Int!) {
+  proposals(where: {status:$status}
+    orderBy: updatedAt
+    orderDirection: asc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    renewRequest{
+      userAddress
+      reason
+      date
+      createdAt
+      renewalRating(where: {status: true}){
+        status
+      }
+    }
+    submitProof{
+      proof
+      createdAt
+      submitRating(where: {status: true}){
+        status
+      }
+    }
+  }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -217,4 +312,7 @@ export {
   USER_PROPOSAL_ACCEPTED_GRAPHQL,
   USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
   ADMIN_PROPOSAL_PENDING_GRAPHQL,
+  ADMIN_PROPOSAL_ACCEPTED,
+  ADMIN_PROPOSAL_REJECT,
+  ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED,
 };
