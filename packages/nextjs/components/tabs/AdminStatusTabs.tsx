@@ -1,8 +1,20 @@
-import { SetStateProp, Status } from "~~/types/utils";
+import { RenewOrSubmitted, SetStateProp, Status } from "~~/types/utils";
 
-function AdminStatusTabs({ setStatus, status }: { status: Status; setStatus: SetStateProp<Status> }) {
-  const handleStatusChange = (status: Status) => {
+function AdminStatusTabs({
+  setStatus,
+  status,
+  IsRenewORSubmitted,
+  setIsRenewORSubmitted,
+}: {
+  status: Status;
+  setStatus: SetStateProp<Status>;
+  IsRenewORSubmitted: RenewOrSubmitted | null;
+  setIsRenewORSubmitted: SetStateProp<RenewOrSubmitted | null>;
+}) {
+  const handleStatusChange = (status: Status, renewOrSubmitted?: RenewOrSubmitted) => {
     setStatus(status);
+    if (renewOrSubmitted) setIsRenewORSubmitted(renewOrSubmitted);
+    else if (IsRenewORSubmitted !== null) setIsRenewORSubmitted(null);
   };
   return (
     <header className="bg-gradient-to-r from-indigo-600 to-purple-800 text-white py-6 px-4 md:px-8 relative mt-4 rounded-md">
@@ -46,6 +58,24 @@ function AdminStatusTabs({ setStatus, status }: { status: Status; setStatus: Set
           }`}
         >
           Completed
+        </button>
+        <button
+          onClick={() => handleStatusChange(Status.Pending, RenewOrSubmitted.Renew)}
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
+            status === Status.Pending ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-700 hover:bg-gray-600"
+          }`}
+        >
+          Renew
+        </button>
+        <button
+          onClick={() => handleStatusChange(Status.Pending, RenewOrSubmitted.Submitted)}
+          className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
+            status === Status.Pending
+              ? "bg-pink-500 hover:bg-pink-600" // Changed color for Submitted button
+              : "bg-gray-700 hover:bg-gray-600"
+          }`}
+        >
+          Submitted
         </button>
       </div>
     </header>

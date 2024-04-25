@@ -10,6 +10,11 @@ export enum Status {
   Completed,
 }
 
+export enum RenewOrSubmitted {
+  Submitted,
+  Renew,
+}
+
 export interface ProposalCardProps {
   userAddress: string;
   currentAddress: string;

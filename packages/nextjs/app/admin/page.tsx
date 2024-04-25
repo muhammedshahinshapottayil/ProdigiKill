@@ -13,7 +13,7 @@ import {
   ADMIN_PROPOSAL_PENDING_GRAPHQL,
   ADMIN_PROPOSAL_REJECT,
 } from "~~/services/graphQL/queries";
-import { Proposal, Status } from "~~/types/utils";
+import { Proposal, RenewOrSubmitted, Status } from "~~/types/utils";
 import {
   PROPOSAL_ACCEPTED_COLUMNS,
   PROPOSAL_COMPLETED_OR_IN_COMPLETED_COLUMNS,
@@ -29,16 +29,21 @@ const HomePage: React.FC = () => {
   const [validateIds, setValidateIds] = useState<string[]>([]);
 
   const [status, setStatus] = useState<Status>(Status.Pending);
+  const [IsRenewORSubmitted, setIsRenewORSubmitted] = useState<RenewOrSubmitted | null>(null);
 
   const PROPOSAL_GQL = gql(
-    status === Status.Pending
-      ? ADMIN_PROPOSAL_PENDING_GRAPHQL
-      : status === Status.Accepted
-      ? ADMIN_PROPOSAL_ACCEPTED
-      : status === Status.Rejected
-      ? ADMIN_PROPOSAL_REJECT
-      : status === Status.Completed || status === Status.INCompleted
-      ? ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED
+    IsRenewORSubmitted === null
+      ? status === Status.Pending
+        ? ADMIN_PROPOSAL_PENDING_GRAPHQL
+        : status === Status.Accepted
+        ? ADMIN_PROPOSAL_ACCEPTED
+        : status === Status.Rejected
+        ? ADMIN_PROPOSAL_REJECT
+        : status === Status.Completed || status === Status.INCompleted
+        ? ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED
+        : ""
+      : status === Status.Pending
+      ? ""
       : "",
   );
 
@@ -150,7 +155,12 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      <AdminStatusTabs setStatus={setStatus} status={status} />
+      <AdminStatusTabs
+        IsRenewORSubmitted={IsRenewORSubmitted}
+        setIsRenewORSubmitted={setIsRenewORSubmitted}
+        setStatus={setStatus}
+        status={status}
+      />
 
       <div className="mt-4 container mx-auto px-4 py-8 border rounded-md border-gray-500">
         <div className="flex justify-between">
