@@ -146,6 +146,24 @@ const HomePage: React.FC = () => {
 
   const totalUsers = [...new Set(taskData.map(task => task.user))].length;
 
+  const TableBottomButton = ({
+    disabled,
+    onClick,
+    children,
+  }: {
+    disabled: boolean;
+    onClick: () => void;
+    children: string;
+  }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {children}
+    </button>
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -162,7 +180,7 @@ const HomePage: React.FC = () => {
           <p className="text-2xl">{statusCounts.completed}</p>
         </div>
         <div className="bg-red-500 text-white rounded-lg p-4">
-          <h3 className="text-lg font-bold mb-2">IN COMPLETED</h3>
+          <h3 className="text-lg font-bold mb-2">In Completed</h3>
           <p className="text-2xl">{statusCounts.overdue}</p>
         </div>
         <div className="bg-purple-500 text-white rounded-lg p-4">
@@ -221,7 +239,8 @@ const HomePage: React.FC = () => {
                       <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                     </th>
                   ))}
-                  {status === Status.Pending && IsRenewORSubmitted === null ? (
+                  {status === Status.Pending &&
+                  (IsRenewORSubmitted === null || IsRenewORSubmitted === RenewOrSubmitted.Submitted) ? (
                     <th
                       key={i}
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -267,34 +286,21 @@ const HomePage: React.FC = () => {
         </div>
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center">
-            <button
-              onClick={() => gotoPage(0)}
-              disabled={!canPreviousPage}
-              className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <TableBottomButton onClick={() => gotoPage(0)} disabled={!canPreviousPage}>
               {"<<"}
-            </button>
-            <button
-              onClick={() => previousPage()}
-              disabled={!canPreviousPage}
-              className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            </TableBottomButton>
+
+            <TableBottomButton onClick={() => previousPage()} disabled={!canPreviousPage}>
               Previous
-            </button>
-            <button
-              onClick={() => nextPage()}
-              disabled={!canNextPage}
-              className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            </TableBottomButton>
+
+            <TableBottomButton onClick={() => nextPage()} disabled={!canNextPage}>
               Next
-            </button>
-            <button
-              onClick={() => gotoPage(pageOptions.length - 1)}
-              disabled={!canNextPage}
-              className="ml-3 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            </TableBottomButton>
+
+            <TableBottomButton onClick={() => gotoPage(pageOptions.length - 1)} disabled={!canNextPage}>
               {">>"}
-            </button>
+            </TableBottomButton>
           </div>
           <div>
             <span className="text-sm text-gray-700">
