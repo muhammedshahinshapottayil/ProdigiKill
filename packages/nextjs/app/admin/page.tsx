@@ -62,7 +62,7 @@ const HomePage: React.FC = () => {
       if (IsRenewORSubmitted === RenewOrSubmitted.Renew) return proposalData.requestRenewals;
     }
     return [];
-  }, [proposalData, loading, address, status, IsLoading]);
+  }, [proposalData, loading, address, status, IsLoading, IsRenewORSubmitted]);
 
   const columns: any = useMemo(() => {
     return IsRenewORSubmitted === null
