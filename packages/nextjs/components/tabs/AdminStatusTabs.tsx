@@ -62,7 +62,9 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.Pending, RenewOrSubmitted.Renew)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.Pending ? "bg-orange-500 hover:bg-orange-600" : "bg-gray-700 hover:bg-gray-600"
+            status === Status.Pending && RenewOrSubmitted.Renew === IsRenewORSubmitted
+              ? "bg-orange-500 hover:bg-orange-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Renew
@@ -70,8 +72,8 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.Pending, RenewOrSubmitted.Submitted)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.Pending
-              ? "bg-pink-500 hover:bg-pink-600" // Changed color for Submitted button
+            status === Status.Pending && RenewOrSubmitted.Submitted === IsRenewORSubmitted
+              ? "bg-pink-500 hover:bg-pink-600"
               : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
