@@ -316,6 +316,7 @@ query MyQuery($status: Int!) {
     id
     date
     createdAt
+    updatedAt
     renewalRating(where: {status: true}) {
       status
     }
