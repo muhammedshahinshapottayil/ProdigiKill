@@ -348,6 +348,42 @@ query MyQuery($status: Int!) {
 }
 `;
 
+const ADMIN_PROPOSAL_DUE_DATE_FINISHED_GRAPHQL = `
+query MyQuery($currentDate: BigInt!) {
+  proposals(
+    where: {finalDate_lt: $currentDate, status: 1}
+  ) {
+    id
+  }
+}
+`;
+
+const ADMIN_DASHBOARD_COUNT = `
+query MyQuery($currentDate: BigInt!) {
+  pending: proposals(where: {status: 1, finalDate_gt: $currentDate}) {
+    id
+  }
+  accepted: proposals(where: {status: 1, finalDate_gt: $currentDate}) {
+    id
+  }
+  rejected: proposals(where: {status: 2}) {
+    id
+  }
+  inCompleted: proposals(where: {status: 3}) {
+    id
+  }
+  completed: proposals(where: {status: 4}) {
+    id
+  }
+  renew:requestRenewals(where:{status:0}){
+    id
+  }
+  proofs:submitProofs(where:{status:0}){
+    id
+  }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -361,4 +397,6 @@ export {
   ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED,
   ADMIN_PROPOSAL_RENEW_APPROVE_PENDING,
   ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING,
+  ADMIN_PROPOSAL_DUE_DATE_FINISHED_GRAPHQL,
+  ADMIN_DASHBOARD_COUNT,
 };

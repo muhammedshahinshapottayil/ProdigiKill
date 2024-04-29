@@ -39,21 +39,6 @@ type ProposalRating = {
   id: string;
 };
 
-// export type Proposal = {
-//   withdrawal: boolean;
-//   userAddress: string;
-//   updatedAt: number;
-//   transactionHash: string;
-//   title: string;
-//   status: Status;
-//   id: string;
-//   finalDate: number;
-//   details: string;
-//   createdAt: number;
-//   userRatingStatus: ProposalRating[];
-//   rating: ProposalRating[];
-// };
-
 export type SetStateProp<T> = React.Dispatch<React.SetStateAction<T>>;
 
 interface SubmitProof {
@@ -100,4 +85,15 @@ export interface HomeQueryResponse {
 export interface modalProps {
   clickElement: React.ReactElement;
   children: React.ReactNode;
+}
+
+type countArrType = { id: string };
+export interface dashboardCountTypes {
+  pending: countArrType[];
+  accepted: countArrType[];
+  rejected: countArrType[];
+  inCompleted: countArrType[];
+  completed: countArrType[];
+  renew: countArrType[];
+  proofs: countArrType[];
 }
