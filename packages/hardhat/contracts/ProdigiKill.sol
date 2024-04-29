@@ -347,10 +347,6 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		emit Evt__Winner__of__Idea(id, idea.userAddress);
 	}
 
-	// function getOwner() public view returns (address) {
-	// 	return owner();
-	// }
-
 	function withdrawRunningFees() public onlyOwner nonReentrant {
 		if (s_feeDetails.next > block.timestamp) revert Err__Time__is__not_UP();
 		uint256 amount = (2 * address(this).balance) / 100;

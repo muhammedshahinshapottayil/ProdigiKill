@@ -102,10 +102,20 @@ export function handleRenewRating(event: Evt__Renew__Rate): void {
 
 export function handleProposalStatusChange(event: Evt__Change__Status): void {
   const proposal = Proposal.load(event.params.id.toHexString());
+  const submit = SubmitProof.load(event.params.id.toHexString());
   if (proposal !== null) {
     proposal.status = event.params.status;
     proposal.updatedAt = event.block.timestamp;
     proposal.save();
+  }
+  if (
+    submit !== null &&
+    (event.params.status === 4 ||
+      event.params.status === 3 ||
+      event.params.status === 2)
+  ) {
+    submit.status = event.params.status;
+    submit.save();
   }
 }
 

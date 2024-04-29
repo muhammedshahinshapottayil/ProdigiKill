@@ -329,6 +329,25 @@ query MyQuery($status: Int!) {
 }
 `;
 
+const ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING = `
+query MyQuery($status: Int!) {
+  submitProofs(where: {status: $status}) {
+    createdAt
+    updatedAt
+    id
+    proof
+    submitRating(where: {status: true}) {
+      status
+    }
+    ProposalID {
+      finalDate
+      details
+      title
+    }
+  }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -341,4 +360,5 @@ export {
   ADMIN_PROPOSAL_REJECT,
   ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED,
   ADMIN_PROPOSAL_RENEW_APPROVE_PENDING,
+  ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING,
 };

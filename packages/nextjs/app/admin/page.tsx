@@ -13,6 +13,7 @@ import {
   ADMIN_PROPOSAL_PENDING_GRAPHQL,
   ADMIN_PROPOSAL_REJECT,
   ADMIN_PROPOSAL_RENEW_APPROVE_PENDING,
+  ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING,
 } from "~~/services/graphQL/queries";
 import { Proposal, RenewOrSubmitted, Status } from "~~/types/utils";
 import {
@@ -21,6 +22,7 @@ import {
   PROPOSAL_PENDING_COLUMNS,
   PROPOSAL_REJECT_COLUMNS,
   PROPOSAL_RENEW_APPROVE_PENDING_COLUMNS,
+  PROPOSAL_SUBMITTED_APPROVE_PENDING_COLUMNS,
   getID,
 } from "~~/utils";
 
@@ -46,6 +48,8 @@ const HomePage: React.FC = () => {
         : ""
       : status === Status.Pending && IsRenewORSubmitted === RenewOrSubmitted.Renew
       ? ADMIN_PROPOSAL_RENEW_APPROVE_PENDING
+      : status === Status.Pending && IsRenewORSubmitted === RenewOrSubmitted.Submitted
+      ? ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING
       : "",
   );
 
@@ -60,6 +64,7 @@ const HomePage: React.FC = () => {
     if (proposalData && !loading && address && status in Status) {
       if (IsRenewORSubmitted === null) return proposalData.proposals;
       if (IsRenewORSubmitted === RenewOrSubmitted.Renew) return proposalData.requestRenewals;
+      if (IsRenewORSubmitted === RenewOrSubmitted.Submitted) return proposalData.submitProofs;
     }
     return [];
   }, [proposalData, loading, address, status, IsLoading, IsRenewORSubmitted]);
@@ -79,7 +84,7 @@ const HomePage: React.FC = () => {
       ? IsRenewORSubmitted === RenewOrSubmitted.Renew
         ? PROPOSAL_RENEW_APPROVE_PENDING_COLUMNS
         : IsRenewORSubmitted === RenewOrSubmitted.Submitted
-        ? []
+        ? PROPOSAL_SUBMITTED_APPROVE_PENDING_COLUMNS
         : []
       : [];
   }, [status, IsRenewORSubmitted]);
@@ -186,8 +191,18 @@ const HomePage: React.FC = () => {
             />
           </div>
           <div className="mb-4 flex justify-around">
-            {status === Status.Pending ? <BulkAcceptButton ids={Ids} /> : ""}
-            {status === Status.Pending ? <BulkRejectButton ids={Ids} /> : ""}
+            {status === Status.Pending &&
+            (IsRenewORSubmitted === null || IsRenewORSubmitted === RenewOrSubmitted.Submitted) ? (
+              <BulkAcceptButton status={IsRenewORSubmitted === null ? 1 : 4} ids={Ids} />
+            ) : (
+              ""
+            )}
+            {status === Status.Pending &&
+            (IsRenewORSubmitted === null || IsRenewORSubmitted === RenewOrSubmitted.Submitted) ? (
+              <BulkRejectButton ids={Ids} />
+            ) : (
+              ""
+            )}
           </div>
         </div>
         <div className="overflow-x-auto">
@@ -230,7 +245,8 @@ const HomePage: React.FC = () => {
                         {cell.render("Cell")}
                       </td>
                     ))}
-                    {status === Status.Pending && IsRenewORSubmitted === null ? (
+                    {status === Status.Pending &&
+                    (IsRenewORSubmitted === null || IsRenewORSubmitted === RenewOrSubmitted.Submitted) ? (
                       <td key={i} className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <CustomCheckBox
