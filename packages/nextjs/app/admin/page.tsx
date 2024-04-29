@@ -12,6 +12,7 @@ import {
   ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED,
   ADMIN_PROPOSAL_PENDING_GRAPHQL,
   ADMIN_PROPOSAL_REJECT,
+  ADMIN_PROPOSAL_RENEW_APPROVE_PENDING,
 } from "~~/services/graphQL/queries";
 import { Proposal, RenewOrSubmitted, Status } from "~~/types/utils";
 import {
@@ -19,6 +20,7 @@ import {
   PROPOSAL_COMPLETED_OR_IN_COMPLETED_COLUMNS,
   PROPOSAL_PENDING_COLUMNS,
   PROPOSAL_REJECT_COLUMNS,
+  PROPOSAL_RENEW_APPROVE_PENDING_COLUMNS,
   getID,
 } from "~~/utils";
 
@@ -42,8 +44,8 @@ const HomePage: React.FC = () => {
         : status === Status.Completed || status === Status.INCompleted
         ? ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED
         : ""
-      : status === Status.Pending
-      ? ""
+      : status === Status.Pending && IsRenewORSubmitted === RenewOrSubmitted.Renew
+      ? ADMIN_PROPOSAL_RENEW_APPROVE_PENDING
       : "",
   );
 
@@ -56,22 +58,31 @@ const HomePage: React.FC = () => {
   const data: Proposal[] = useMemo(() => {
     if (IsLoading) setIsLoading(false);
     if (proposalData && !loading && address && status in Status) {
-      return proposalData.proposals.length > 0 ? proposalData.proposals : [];
+      if (IsRenewORSubmitted === null) return proposalData.proposals;
+      if (IsRenewORSubmitted === RenewOrSubmitted.Renew) return proposalData.requestRenewals;
     }
     return [];
   }, [proposalData, loading, address, status, IsLoading]);
 
   const columns: any = useMemo(() => {
-    return Status.Pending === status
-      ? PROPOSAL_PENDING_COLUMNS
-      : Status.Accepted === status
-      ? PROPOSAL_ACCEPTED_COLUMNS
-      : Status.Rejected === status
-      ? PROPOSAL_REJECT_COLUMNS
-      : Status.Completed === status || Status.INCompleted === status
-      ? PROPOSAL_COMPLETED_OR_IN_COMPLETED_COLUMNS
+    return IsRenewORSubmitted === null
+      ? Status.Pending === status
+        ? PROPOSAL_PENDING_COLUMNS
+        : Status.Accepted === status
+        ? PROPOSAL_ACCEPTED_COLUMNS
+        : Status.Rejected === status
+        ? PROPOSAL_REJECT_COLUMNS
+        : Status.Completed === status || Status.INCompleted === status
+        ? PROPOSAL_COMPLETED_OR_IN_COMPLETED_COLUMNS
+        : []
+      : Status.Pending === status && IsRenewORSubmitted in RenewOrSubmitted
+      ? IsRenewORSubmitted === RenewOrSubmitted.Renew
+        ? PROPOSAL_RENEW_APPROVE_PENDING_COLUMNS
+        : IsRenewORSubmitted === RenewOrSubmitted.Submitted
+        ? []
+        : []
       : [];
-  }, [status]);
+  }, [status, IsRenewORSubmitted]);
 
   const {
     getTableProps,
@@ -195,7 +206,7 @@ const HomePage: React.FC = () => {
                       <span>{column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}</span>
                     </th>
                   ))}
-                  {status === Status.Pending ? (
+                  {status === Status.Pending && IsRenewORSubmitted === null ? (
                     <th
                       key={i}
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -219,7 +230,7 @@ const HomePage: React.FC = () => {
                         {cell.render("Cell")}
                       </td>
                     ))}
-                    {status === Status.Pending ? (
+                    {status === Status.Pending && IsRenewORSubmitted === null ? (
                       <td key={i} className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <CustomCheckBox

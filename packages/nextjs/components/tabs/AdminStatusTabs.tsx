@@ -13,7 +13,7 @@ function AdminStatusTabs({
 }) {
   const handleStatusChange = (status: Status, renewOrSubmitted?: RenewOrSubmitted) => {
     setStatus(status);
-    if (renewOrSubmitted) setIsRenewORSubmitted(renewOrSubmitted);
+    if (renewOrSubmitted !== undefined) setIsRenewORSubmitted(renewOrSubmitted);
     else if (IsRenewORSubmitted !== null) setIsRenewORSubmitted(null);
   };
   return (
@@ -22,7 +22,9 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.Pending)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.Pending ? "bg-blue-500 hover:bg-blue-600" : "bg-gray-700 hover:bg-gray-600"
+            status === Status.Pending && IsRenewORSubmitted === null
+              ? "bg-blue-500 hover:bg-blue-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Pending
@@ -30,7 +32,9 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.Accepted)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.Accepted ? "bg-green-500 hover:bg-green-600" : "bg-gray-700 hover:bg-gray-600"
+            status === Status.Accepted && IsRenewORSubmitted === null
+              ? "bg-green-500 hover:bg-green-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Accepted
@@ -38,7 +42,9 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.Rejected)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.Rejected ? "bg-red-500 hover:bg-red-600" : "bg-gray-700 hover:bg-gray-600"
+            status === Status.Rejected && IsRenewORSubmitted === null
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Rejected
@@ -46,7 +52,9 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.INCompleted)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.INCompleted ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-700 hover:bg-gray-600"
+            status === Status.INCompleted && IsRenewORSubmitted === null
+              ? "bg-yellow-500 hover:bg-yellow-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           In Complete
@@ -54,7 +62,9 @@ function AdminStatusTabs({
         <button
           onClick={() => handleStatusChange(Status.Completed)}
           className={`px-4 py-2 font-semibold rounded-lg transition-colors duration-300 ${
-            status === Status.Completed ? "bg-purple-500 hover:bg-purple-600" : "bg-gray-700 hover:bg-gray-600"
+            status === Status.Completed && IsRenewORSubmitted === null
+              ? "bg-purple-500 hover:bg-purple-600"
+              : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
           Completed

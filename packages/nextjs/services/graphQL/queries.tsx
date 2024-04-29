@@ -304,6 +304,30 @@ query MyQuery($status:Int!) {
 }
 `;
 
+const ADMIN_PROPOSAL_RENEW_APPROVE_PENDING = `
+query MyQuery($status: Int!) {
+  requestRenewals(
+    where: {status: $status}
+    orderBy: createdAt
+    orderDirection: desc
+  ) {
+    userAddress
+    reason
+    id
+    date
+    createdAt
+    renewalRating(where: {status: true}) {
+      status
+    }
+    ProposalID {
+      finalDate
+      details
+      title
+    }
+  }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -315,4 +339,5 @@ export {
   ADMIN_PROPOSAL_ACCEPTED,
   ADMIN_PROPOSAL_REJECT,
   ADMIN_PROPOSAL_COMPLETED_OR_IN_COMPLETED,
+  ADMIN_PROPOSAL_RENEW_APPROVE_PENDING,
 };

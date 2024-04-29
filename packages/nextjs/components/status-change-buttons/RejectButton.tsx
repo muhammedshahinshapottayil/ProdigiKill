@@ -1,7 +1,7 @@
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { getID } from "~~/utils";
 
-function AcceptButton({ id }: { id: string }) {
+function RejectButton({ id }: { id: string }) {
   const { writeAsync: applicationBulkStatusChange } = useScaffoldContractWrite({
     contractName: "ProdigiKill",
     functionName: "applicationBulkStatusChange",
@@ -21,4 +21,4 @@ function AcceptButton({ id }: { id: string }) {
   );
 }
 
-export default AcceptButton;
+export default RejectButton;
