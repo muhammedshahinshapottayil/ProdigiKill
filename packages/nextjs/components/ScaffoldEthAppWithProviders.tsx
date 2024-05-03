@@ -2,14 +2,13 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { AdminHeader } from "./AdminHeader";
 import AdminWrapper from "./AdminWrapper";
+import { AdminHeader, Header } from "./headers";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { Toaster } from "react-hot-toast";
 import { WagmiConfig, useAccount } from "wagmi";
 import { Footer } from "~~/components/Footer";
-import { Header } from "~~/components/Header";
 import { BlockieAvatar } from "~~/components/scaffold-eth";
 import { ProgressBar } from "~~/components/scaffold-eth/ProgressBar";
 import { useNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
