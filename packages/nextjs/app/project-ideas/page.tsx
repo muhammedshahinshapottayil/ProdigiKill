@@ -24,7 +24,7 @@ const HomePage: React.FC = () => {
     setDataLoading(true);
     if (ideaData && !loading && address) {
       setDataLoading(false);
-      return ideaData.proposals.length > 0 ? ideaData.proposals : [];
+      return ideaData.proposalIdeas.length > 0 ? ideaData.proposalIdeas : [];
     }
     return [];
   }, [ideaData, loading, address, IsLoading]);

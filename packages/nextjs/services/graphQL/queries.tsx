@@ -386,11 +386,8 @@ query MyQuery($currentDate: BigInt!) {
 
 const PROPOSED_IDEAS_GRAPHQL = `
 query MyQuery($address: String!) {
-  proposalIdea(
-    orderBy: createdAt
-    orderDirection: desc
-  ) {
-    id
+  proposalIdeas(orderBy: createdAt, orderDirection: desc) {
+     id
     address
     details
     title
