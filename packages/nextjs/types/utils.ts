@@ -32,6 +32,17 @@ export interface ProposalCardProps {
   withdrawStatus: boolean;
 }
 
+export interface IdeaCardProps {
+  id: string;
+  userAddress: string;
+  title: string;
+  details: string;
+  winner: boolean;
+  createdAt: number;
+  rating: Rating[];
+  userRatingStatus: ProposalRating[];
+}
+
 type ProposalRating = {
   status: string;
   updatedAt: string;

@@ -384,6 +384,28 @@ query MyQuery($currentDate: BigInt!) {
 }
 `;
 
+const PROPOSED_IDEAS_GRAPHQL = `
+query MyQuery($address: String!) {
+  proposalIdea(
+    orderBy: createdAt
+    orderDirection: desc
+  ) {
+    id
+    address
+    details
+    title
+    createdAt
+    winner
+    rating(where: {status: true}){
+      id
+    }
+    userRatingStatus:rating(where: {userAddress: $address,status: true}){
+      status
+    }
+  }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -399,4 +421,5 @@ export {
   ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING,
   ADMIN_PROPOSAL_DUE_DATE_FINISHED_GRAPHQL,
   ADMIN_DASHBOARD_COUNT,
+  PROPOSED_IDEAS_GRAPHQL,
 };

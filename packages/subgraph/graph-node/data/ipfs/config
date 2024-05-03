@@ -98,8 +98,8 @@
     "Writable": false
   },
   "Identity": {
-    "PeerID": "12D3KooWCasC6Ww3vPjfXM7V5vBNmC8DhUzfdv72bAAHBBz8gjPc",
-    "PrivKey": "CAESQPY6Oso8BcWBV+hvBGMRux8cR1U2Q7mznVefHsKqrfIQKR2/By6JA32otu5iXajM7u8z9wmvSdQ8MJLcIuqSmq8="
+    "PeerID": "12D3KooWQKUvipvkJv242jNcsEnd52FYbNA6htm5xj8U8ngghQfw",
+    "PrivKey": "CAESQAUpZvkrbWTGHzkQDgWtAhuVRvsyMn5ibr9fM3YbQwms13kaHAvsb5gNoHmWbVyYtJQkGRwj9i6D6btRAHHnid4="
   },
   "Internal": {},
   "Ipns": {
