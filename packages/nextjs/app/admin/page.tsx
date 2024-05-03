@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { gql, useQuery } from "@apollo/client";
+import { getUnixTime } from "date-fns";
 import { useGlobalFilter, usePagination, useSortBy, useTable } from "react-table";
 import { useAccount } from "wagmi";
 import { BulkAcceptButton, BulkRejectButton } from "~~/components/bulk-action-button";
@@ -17,6 +18,9 @@ import {
   ADMIN_PROPOSAL_REJECT,
   ADMIN_PROPOSAL_RENEW_APPROVE_PENDING,
   ADMIN_PROPOSAL_SUBMITTED_APPROVE_PENDING,
+  IDEA_WINNER_GRAPHQL,
+  PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL,
+  PROPOSED_IDEAS_LAST_WINNER_GRAPHQL,
 } from "~~/services/graphQL/queries";
 import { Proposal, RenewOrSubmitted, Status, dashboardCountTypes } from "~~/types/utils";
 import {
@@ -67,6 +71,25 @@ const HomePage: React.FC = () => {
   );
 
   const currentDate = Math.floor(Date.now() / 1000);
+
+  const date = new Date();
+  const firstDay = new Date(date.setDate(1));
+  const startDate = getUnixTime(firstDay.setMonth(firstDay.getMonth() - 1));
+
+  const { data: monthlyWinner } = useQuery(gql(IDEA_WINNER_GRAPHQL), {
+    variables: { startDate, endDate: currentDate },
+    fetchPolicy: "network-only",
+  });
+
+  const { data: monthlyWinnerIdea } = useQuery(gql(PROPOSED_IDEAS_LAST_WINNER_GRAPHQL), {
+    variables: { startDate, endDate: currentDate },
+    fetchPolicy: "network-only",
+  });
+
+  const { data: selectWinnerIdea } = useQuery(gql(PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL), {
+    variables: { startDate, endDate: currentDate },
+    fetchPolicy: "network-only",
+  });
 
   const { data: proposalDueData } = useQuery(gql(ADMIN_PROPOSAL_DUE_DATE_FINISHED_GRAPHQL), {
     variables: { currentDate },
@@ -187,10 +210,31 @@ const HomePage: React.FC = () => {
     },
   });
 
+  const { writeAsync: winnerOfIdea } = useScaffoldContractWrite({
+    contractName: "ProdigiKill",
+    functionName: "winnerOfIdea",
+    args: [
+      selectWinnerIdea.proposalIdeas.length > 0
+        ? selectWinnerIdea.proposalIdeas.sort((a: any, b: any) => a.rating - b.rating)[0].id
+        : 0n,
+    ],
+    blockConfirmations: 1,
+    onBlockConfirmation: txnReceipt => {
+      console.log("Transaction blockHash", txnReceipt.blockHash);
+    },
+  });
+
   useEffect(() => {
     if (Array.isArray(proposalDueData?.proposals))
       if (proposalDueData.proposals.length > 0) applicationBulkStatusChange();
   }, [proposalDueData?.proposals, applicationBulkStatusChange]);
+
+  useEffect(() => {
+    const selectAWinner = () => {
+      winnerOfIdea();
+    };
+    monthlyWinner.winners.length === 0 && monthlyWinnerIdea.proposalIdeas.length === 0 ? selectAWinner() : "";
+  }, [monthlyWinner]);
 
   useEffect(() => {
     if (Array.isArray(dashboardCount?.pending)) setCount(dashboardCount);

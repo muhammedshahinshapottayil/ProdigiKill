@@ -403,6 +403,45 @@ query MyQuery($address: String!) {
 }
 `;
 
+const PROPOSED_IDEAS_LAST_WINNER_GRAPHQL = `
+query MyQuery($startDate: String!,$endDate: String!) {
+  proposalIdeas({createdAt_gte: $startDate, createdAt_lte: $endDate,winner:true}) {
+     id
+    address
+    details
+    title
+    createdAt
+    winner
+    rating(where: {status: true}){
+      id
+    }
+    userRatingStatus:rating(where: {userAddress: $address,status: true}){
+      status
+    }
+  }
+}
+`;
+
+const PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL = `
+query MyQuery($startDate: String!,$endDate: String!) {
+  proposalIdeas({createdAt_gte: $startDate, createdAt_lte: $endDate}) {
+     id
+    address
+    rating(where: {status: true}){
+      id
+    }
+  }
+}
+`;
+
+const IDEA_WINNER_GRAPHQL = `
+query MyQuery($startDate: String!,$endDate: String!) {
+    winners(where: {createdAt_gte: $startDate, createdAt_lte: $endDate}) {
+      id
+    }
+}
+`;
+
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
@@ -419,4 +458,7 @@ export {
   ADMIN_PROPOSAL_DUE_DATE_FINISHED_GRAPHQL,
   ADMIN_DASHBOARD_COUNT,
   PROPOSED_IDEAS_GRAPHQL,
+  IDEA_WINNER_GRAPHQL,
+  PROPOSED_IDEAS_LAST_WINNER_GRAPHQL,
+  PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL,
 };

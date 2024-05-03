@@ -36,7 +36,7 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   const yourContract = await hre.ethers.getContract<Contract>("ProdigiKill", deployer);
   console.log(
     "👋 Initial greeting:",
-    await yourContract.transferOwnership("0x2C8724890040017d62B1922DBEAf799f1F74DC6A"),
+    await yourContract.transferOwnership("0x8131b052A1E8dB38Fbc3891e15b84C147C4D3F19"),
   );
 };
 
