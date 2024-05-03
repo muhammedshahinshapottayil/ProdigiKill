@@ -2,7 +2,7 @@ import { useState } from "react";
 import Modal from "react-modal";
 import { modalProps } from "~~/types/utils";
 
-// Modal.setAppElement("#root");
+Modal.setAppElement("#root");
 
 const customStyles = {
   content: {

@@ -35,23 +35,23 @@ const HomePage: React.FC = () => {
     <Spinner />
   ) : (
     <div className="bg-gray-100 min-h-screen">
-      <div className="container mx-auto py-8">
-        <div className="absolute right-1" >
-          <CustomModal
-            clickElement={
-              <button
-                className={`px-4 py-2 rounded-lg transition-colors duration-300  font-semibold
+      <div className="absolute right-1 top-2">
+        <CustomModal
+          clickElement={
+            <button
+              className={`px-4 py-2 rounded-lg text-white transition-colors duration-300  font-semibold
            bg-green-600 hover:bg-green-500`}
-              >
-                Post Idea
-              </button>
-            }
-          >
-            <div>
-              <PostIdeas />
-            </div>
-          </CustomModal>
-        </div>
+            >
+              Post Idea
+            </button>
+          }
+        >
+          <div>
+            <PostIdeas />
+          </div>
+        </CustomModal>
+      </div>
+      <div className="container mx-auto py-8">
         {!DataLoading ? (
           data.length === 0 ? (
             <h1 className="text-center text-2xl font-bold mb-4">No Data</h1>
