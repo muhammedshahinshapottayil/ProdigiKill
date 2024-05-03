@@ -214,7 +214,7 @@ const HomePage: React.FC = () => {
     contractName: "ProdigiKill",
     functionName: "winnerOfIdea",
     args: [
-      selectWinnerIdea.proposalIdeas.length > 0
+      selectWinnerIdea?.proposalIdeas?.length > 0
         ? selectWinnerIdea.proposalIdeas.sort((a: any, b: any) => a.rating - b.rating)[0].id
         : 0n,
     ],
@@ -230,11 +230,13 @@ const HomePage: React.FC = () => {
   }, [proposalDueData?.proposals, applicationBulkStatusChange]);
 
   useEffect(() => {
-    const selectAWinner = () => {
+    if (
+      monthlyWinner?.winners?.length === 0 &&
+      monthlyWinnerIdea?.proposalIdeas?.length === 0 &&
+      selectWinnerIdea?.proposalIdeas?.length > 0
+    )
       winnerOfIdea();
-    };
-    monthlyWinner.winners.length === 0 && monthlyWinnerIdea.proposalIdeas.length === 0 ? selectAWinner() : "";
-  }, [monthlyWinner]);
+  }, [monthlyWinner, monthlyWinnerIdea, selectWinnerIdea, winnerOfIdea]);
 
   useEffect(() => {
     if (Array.isArray(dashboardCount?.pending)) setCount(dashboardCount);

@@ -404,29 +404,17 @@ query MyQuery($address: String!) {
 `;
 
 const PROPOSED_IDEAS_LAST_WINNER_GRAPHQL = `
-query MyQuery($startDate: String!,$endDate: String!) {
-  proposalIdeas({createdAt_gte: $startDate, createdAt_lte: $endDate,winner:true}) {
+query MyQuery($startDate: BigInt!,$endDate: BigInt!) {
+  proposalIdeas(where:{createdAt_gte: $startDate, createdAt_lte: $endDate,winner:true}) {
      id
-    address
-    details
-    title
-    createdAt
-    winner
-    rating(where: {status: true}){
-      id
-    }
-    userRatingStatus:rating(where: {userAddress: $address,status: true}){
-      status
-    }
   }
 }
 `;
 
 const PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL = `
-query MyQuery($startDate: String!,$endDate: String!) {
-  proposalIdeas({createdAt_gte: $startDate, createdAt_lte: $endDate}) {
+query MyQuery($startDate: BigInt!,$endDate: BigInt!) {
+  proposalIdeas(where:{createdAt_gte: $startDate, createdAt_lte: $endDate}) {
      id
-    address
     rating(where: {status: true}){
       id
     }
@@ -435,7 +423,7 @@ query MyQuery($startDate: String!,$endDate: String!) {
 `;
 
 const IDEA_WINNER_GRAPHQL = `
-query MyQuery($startDate: String!,$endDate: String!) {
+query MyQuery($startDate: BigInt!,$endDate: BigInt!) {
     winners(where: {createdAt_gte: $startDate, createdAt_lte: $endDate}) {
       id
     }
