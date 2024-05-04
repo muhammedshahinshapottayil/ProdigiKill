@@ -350,7 +350,7 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 			next: block.timestamp + 30,
 			lastMonthAmount: amount
 		});
-		(bool success, ) = payable(address(this)).call{ value: amount }("");
+		(bool success, ) = payable(address(owner())).call{ value: amount }("");
 		if (!success) revert Err__Transaction__Failed(owner());
 	}
 
