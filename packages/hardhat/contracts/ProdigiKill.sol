@@ -233,6 +233,7 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		(bool success, ) = payable(address(msg.sender)).call{
 			value: 0.5 ether
 		}("");
+
 		if (!success) revert Err__Transaction__Failed(msg.sender);
 
 		emit Evt__Withdrawed__Collateral(id, msg.sender);
@@ -242,8 +243,6 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		uint256 id,
 		string memory proof
 	) public isOwner(id) isBlackListed isAccepted(id) {
-		Tasks memory task = getTaskById(id);
-		if (task.status != Status.Accepted) revert Err__Not__Accepted(id);
 		emit Evt__Submit__Proof(id, msg.sender, Status.Pending, proof);
 	}
 

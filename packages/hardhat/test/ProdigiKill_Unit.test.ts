@@ -193,6 +193,7 @@ describe("ProdigiKill", function () {
       expect(afterEthAmountAccount).equal(beforeEthAmountAccount - parseEther("0.05") - gasCost);
     });
   });
+
   describe("Task Renew Application Rating", async () => {
     it("task renew application rate", async function () {
       await ProdigiKill.taskApply(title, details, noOfDays, {
@@ -243,6 +244,33 @@ describe("ProdigiKill", function () {
         value: parseEther("0.5"),
       });
       await expect(ProdigiKill.rejectRenewApplication(0)).to.be.revertedWith("something went wrong");
+    });
+  });
+
+  describe("Submit application", async () => {
+    it("submit proof with accurate it's status is still pending", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await expect(ProdigiKill.submitProof(0, details)).to.be.revertedWith("something went wrong");
+    });
+
+    it("submit proof and it's status is accepted", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+      await expect(ProdigiKill.submitProof(0, details)).to.be.ok;
+    });
+  });
+
+  describe("Submit application Rating", async () => {
+    it("submit proof application rate", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+      await expect(ProdigiKill.rateCompletedProof(0)).to.be.revertedWith("you are the task owner");
     });
   });
 });
