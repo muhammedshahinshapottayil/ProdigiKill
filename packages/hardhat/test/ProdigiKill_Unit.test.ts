@@ -3,14 +3,14 @@ import { ethers } from "hardhat";
 import { ProdigiKill } from "../typechain-types";
 import { parseEther, TransactionReceipt } from "ethers";
 import { describe } from "mocha";
-
+// Prodigi Kill Unit Testing
 describe("ProdigiKill", function () {
   let ProdigiKill: ProdigiKill;
   const title = "Test title";
   const details = "Test details";
   const noOfDays = 1;
 
-  before(async () => {
+  beforeEach(async () => {
     const ProdigiKillFactory = await ethers.getContractFactory("ProdigiKill");
     ProdigiKill = (await ProdigiKillFactory.deploy()) as ProdigiKill;
     await ProdigiKill.waitForDeployment();
@@ -52,7 +52,6 @@ describe("ProdigiKill", function () {
 
     it("task apply with absolute args and collateral without blacklisted address", async function () {
       const [owner] = await ethers.getSigners();
-      await ProdigiKill.addToBlackList(owner.address);
       const contactAddress = await ProdigiKill.getAddress();
 
       const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
@@ -85,7 +84,7 @@ describe("ProdigiKill", function () {
 
       const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
       let gasCost: bigint = 0n;
-      for (let index = 1; index <= 3; index++) {
+      for (let index = 0; index < 3; index++) {
         const txResult = await ProdigiKill.taskApply(`${title + index}`, details, noOfDays, {
           value: parseEther("0.5"),
         });
@@ -132,10 +131,22 @@ describe("ProdigiKill", function () {
   });
 
   describe("Renew application", async () => {
+    it("renew apply with accurate ETH but it's status is still pending", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await expect(
+        ProdigiKill.renewApply(0, details, noOfDays, {
+          value: parseEther("0.05"),
+        }),
+      ).to.be.revertedWith("something went wrong");
+    });
+
     it("renew apply with less ETH", async function () {
       await ProdigiKill.taskApply(title, details, noOfDays, {
         value: parseEther("0.5"),
       });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
 
       await expect(
         ProdigiKill.renewApply(0, details, noOfDays, {
@@ -145,31 +156,25 @@ describe("ProdigiKill", function () {
     });
 
     it("renew apply with more ETH", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+
       await expect(
         ProdigiKill.renewApply(0, details, noOfDays, {
           value: parseEther("0.06"),
-        }),
-      ).to.be.revertedWithCustomError(ProdigiKill, "Err__Renew");
-    });
-
-    it("renew apply with more ETH", async function () {
-      await expect(
-        ProdigiKill.renewApply(0, details, noOfDays, {
-          value: parseEther("0.06"),
-        }),
-      ).to.be.revertedWithCustomError(ProdigiKill, "Err__Renew");
-    });
-
-    it("renew apply with accurate ETH but it's status is still pending", async function () {
-      await expect(
-        ProdigiKill.renewApply(0, details, noOfDays, {
-          value: parseEther("0.05"),
         }),
       ).to.be.revertedWithCustomError(ProdigiKill, "Err__Renew");
     });
 
     it("renew apply with accurate ETH and it's status is accepted", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
       await ProdigiKill.applicationBulkStatusChange([0], 1);
+
       const [owner] = await ethers.getSigners();
       const contactAddress = await ProdigiKill.getAddress();
       const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
@@ -187,15 +192,57 @@ describe("ProdigiKill", function () {
       expect(afterEthAmountInContract - beforeEthAmountInContract).equal(parseEther("0.05"));
       expect(afterEthAmountAccount).equal(beforeEthAmountAccount - parseEther("0.05") - gasCost);
     });
-
-    describe("Task Renew Application Rating", async () => {
-      it("task application rate", async function () {
-        await ProdigiKill.taskApply(title, details, noOfDays, {
-          value: parseEther("0.5"),
-        });
-        await ProdigiKill.applicationBulkStatusChange([0], 1);
-        await expect(ProdigiKill.rateRenewApplication(0)).to.be.revertedWith("you are the task owner");
+  });
+  describe("Task Renew Application Rating", async () => {
+    it("task renew application rate", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
       });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+      await expect(ProdigiKill.rateRenewApplication(0)).to.be.revertedWith("you are the task owner");
+    });
+  });
+
+  describe("Task Renew Application Accept", async () => {
+    it("task application accept", async function () {
+      const dateInUnix = Math.floor(Date.now() / 1000);
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+      await ProdigiKill.renewApply(0, details, noOfDays, {
+        value: parseEther("0.05"),
+      });
+      await expect(ProdigiKill.renewApplicationAccept(0, dateInUnix)).to.be.ok;
+    });
+
+    it("task application accept on status pending task", async function () {
+      const dateInUnix = Math.floor(Date.now() / 1000);
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await expect(ProdigiKill.renewApplicationAccept(0, dateInUnix)).to.be.revertedWith("something went wrong");
+    });
+  });
+
+  describe("Task Renew Application Reject", async () => {
+    it("task application reject", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+
+      await ProdigiKill.renewApply(0, details, noOfDays, {
+        value: parseEther("0.05"),
+      });
+      await expect(ProdigiKill.rejectRenewApplication(0)).to.be.ok;
+    });
+
+    it("task application reject on status pending task", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await expect(ProdigiKill.rejectRenewApplication(0)).to.be.revertedWith("something went wrong");
     });
   });
 });

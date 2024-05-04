@@ -206,10 +206,9 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		uint256 id,
 		string memory delayReason,
 		uint256 date
-	) public payable isOwner(id) isBlackListed {
+	) public payable isOwner(id) isBlackListed isAccepted(id) {
 		if (msg.value != 0.05 ether) revert Err__Renew();
 		Tasks memory task = getTaskById(id);
-		if (task.status != Status.Accepted) revert Err__Renew();
 		emit Evt__Renew(
 			id,
 			msg.sender,
@@ -294,8 +293,6 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		uint256 id,
 		uint256 date
 	) public onlyOwner isAccepted(id) {
-		Tasks memory task = getTaskById(id);
-		if (task.status != Status.Accepted) revert Err__Renew__Acceptance(id);
 		s_prodigiUsers[id].date = date;
 		emit Evt__Renew__Accepted(id, Status.Accepted);
 	}
