@@ -73,21 +73,21 @@ const HomePage: React.FC = () => {
   const currentDate = Math.floor(Date.now() / 1000);
 
   const date = new Date();
-  const firstDay = new Date(date.setDate(1));
-  const startDate = getUnixTime(firstDay.setMonth(firstDay.getMonth() - 1));
+  const endDate = new Date(date.setDate(1));
+  const startDate = getUnixTime(endDate.setMonth(endDate.getMonth() - 1));
 
   const { data: monthlyWinner } = useQuery(gql(IDEA_WINNER_GRAPHQL), {
-    variables: { startDate, endDate: currentDate },
+    variables: { startDate, endDate },
     fetchPolicy: "network-only",
   });
 
   const { data: monthlyWinnerIdea } = useQuery(gql(PROPOSED_IDEAS_LAST_WINNER_GRAPHQL), {
-    variables: { startDate, endDate: currentDate },
+    variables: { startDate, endDate },
     fetchPolicy: "network-only",
   });
 
   const { data: selectWinnerIdea } = useQuery(gql(PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL), {
-    variables: { startDate, endDate: currentDate },
+    variables: { startDate, endDate },
     fetchPolicy: "network-only",
   });
 
@@ -215,7 +215,7 @@ const HomePage: React.FC = () => {
     functionName: "winnerOfIdea",
     args: [
       selectWinnerIdea?.proposalIdeas?.length > 0
-        ? selectWinnerIdea.proposalIdeas.sort((a: any, b: any) => a.rating - b.rating)[0].id
+        ? selectWinnerIdea.proposalIdeas.sort((a: any, b: any) => a.rating.length - b.rating.length)[0].id
         : 0n,
     ],
     blockConfirmations: 1,
