@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { ProdigiKill } from "../typechain-types";
-import { parseEther } from "ethers";
+import { parseEther, TransactionReceipt } from "ethers";
 import { describe } from "mocha";
 
 describe("ProdigiKill", function () {
@@ -53,10 +53,24 @@ describe("ProdigiKill", function () {
     it("task apply with absolute args and collateral without blacklisted address", async function () {
       const [owner] = await ethers.getSigners();
       await ProdigiKill.addToBlackList(owner.address);
-      await ProdigiKill.taskApply(title, details, noOfDays, {
+      const contactAddress = await ProdigiKill.getAddress();
+
+      const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
+
+      const txResult = await ProdigiKill.taskApply(title, details, noOfDays, {
         value: parseEther("0.5"),
       });
+
+      const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
+      const gasCost = txResult.gasPrice * receipt.gasUsed!;
+
+      const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const afterEthAmountAccount = await ethers.provider.getBalance(owner);
+
       const [id, address, resultTitle, , withdrawStatus, status] = await ProdigiKill.getTaskById(0);
+      expect(beforeEthAmountInContract + afterEthAmountInContract).equal(parseEther("0.5"));
+      expect(afterEthAmountAccount).equal(beforeEthAmountAccount - parseEther("0.5") - gasCost);
       expect(address).equal(owner.address);
       expect(resultTitle).equal(title);
       expect(id).equal(0n);
@@ -66,10 +80,19 @@ describe("ProdigiKill", function () {
 
     it("task apply with absolute args and collateral without blacklisted address multiple data adding", async function () {
       const [owner] = await ethers.getSigners();
+      const contactAddress = await ProdigiKill.getAddress();
+      const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+
+      const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
+      let gasCost: bigint = 0n;
       for (let index = 1; index <= 3; index++) {
-        await ProdigiKill.taskApply(`${title + index}`, details, noOfDays, {
+        const txResult = await ProdigiKill.taskApply(`${title + index}`, details, noOfDays, {
           value: parseEther("0.5"),
         });
+
+        const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
+        gasCost += txResult.gasPrice * receipt.gasUsed!;
+
         const [id, address, resultTitle, , withdrawStatus, status] = await ProdigiKill.getTaskById(index);
         expect(address).equal(owner.address);
         expect(resultTitle).equal(`${title + index}`);
@@ -77,6 +100,11 @@ describe("ProdigiKill", function () {
         expect(withdrawStatus).equal(false);
         expect(status).equal(0n);
       }
+      const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const afterEthAmountAccount = await ethers.provider.getBalance(owner);
+
+      expect(afterEthAmountInContract - beforeEthAmountInContract).equal(parseEther("1.5"));
+      expect(afterEthAmountAccount).equal(beforeEthAmountAccount - parseEther("1.5") - gasCost);
     });
   });
 
@@ -142,11 +170,22 @@ describe("ProdigiKill", function () {
 
     it("renew apply with accurate ETH and it's status is accepted", async function () {
       await ProdigiKill.applicationBulkStatusChange([0], 1);
-      await expect(
-        await ProdigiKill.renewApply(0, details, noOfDays, {
-          value: parseEther("0.05"),
-        }),
-      ).to.ok;
+      const [owner] = await ethers.getSigners();
+      const contactAddress = await ProdigiKill.getAddress();
+      const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
+      const txResult = await ProdigiKill.renewApply(0, details, noOfDays, {
+        value: parseEther("0.05"),
+      });
+      await expect(txResult).to.ok;
+
+      const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const afterEthAmountAccount = await ethers.provider.getBalance(owner);
+      const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
+      const gasCost = txResult.gasPrice * receipt.gasUsed!;
+
+      expect(afterEthAmountInContract - beforeEthAmountInContract).equal(parseEther("0.05"));
+      expect(afterEthAmountAccount).equal(beforeEthAmountAccount - parseEther("0.05") - gasCost);
     });
 
     describe("Task Renew Application Rating", async () => {
