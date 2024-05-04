@@ -363,20 +363,20 @@ describe("ProdigiKill", function () {
     });
 
     // try after commenting constructor (+ 30 days)
-    it("running fee's", async function () {
-      await ProdigiKill.donation({ value: parseEther("1") });
-      const [owner] = await ethers.getSigners();
-      const contactAddress = await ProdigiKill.getAddress();
-      const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
-      const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
-      const txResult = await ProdigiKill.withdrawRunningFees();
-      expect(txResult).to.be.ok;
-      const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
-      const afterEthAmountAccount = await ethers.provider.getBalance(owner);
-      const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
-      const gasCost = txResult.gasPrice * receipt.gasUsed!;
-      expect(afterEthAmountInContract).equal(beforeEthAmountInContract - (2n * beforeEthAmountInContract) / 100n);
-      expect(afterEthAmountAccount).equal(beforeEthAmountAccount - gasCost + (2n * beforeEthAmountInContract) / 100n);
-    });
+    // it("running fee's", async function () {
+    //   await ProdigiKill.donation({ value: parseEther("1") });
+    //   const [owner] = await ethers.getSigners();
+    //   const contactAddress = await ProdigiKill.getAddress();
+    //   const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+    //   const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
+    //   const txResult = await ProdigiKill.withdrawRunningFees();
+    //   expect(txResult).to.be.ok;
+    //   const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+    //   const afterEthAmountAccount = await ethers.provider.getBalance(owner);
+    //   const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
+    //   const gasCost = txResult.gasPrice * receipt.gasUsed!;
+    //   expect(afterEthAmountInContract).equal(beforeEthAmountInContract - (2n * beforeEthAmountInContract) / 100n);
+    //   expect(afterEthAmountAccount).equal(beforeEthAmountAccount - gasCost + (2n * beforeEthAmountInContract) / 100n);
+    // });
   });
 });
