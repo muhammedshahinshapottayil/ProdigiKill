@@ -4,6 +4,7 @@ import { ProdigiKill } from "../typechain-types";
 import { parseEther, TransactionReceipt } from "ethers";
 import { describe } from "mocha";
 // Prodigi Kill Unit Testing
+// Excluding testing with another account almost everything is basically tested
 describe("ProdigiKill", function () {
   let ProdigiKill: ProdigiKill;
   const title = "Test title";
@@ -271,6 +272,111 @@ describe("ProdigiKill", function () {
       });
       await ProdigiKill.applicationBulkStatusChange([0], 1);
       await expect(ProdigiKill.rateCompletedProof(0)).to.be.revertedWith("you are the task owner");
+    });
+  });
+
+  describe("Withdrawals colladral", async () => {
+    it("withdraw colladral", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 2);
+      await expect(ProdigiKill.withdrawCollateral(0)).to.be.ok;
+    });
+    it("withdraw colladral on status not equal to reject", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+      await expect(ProdigiKill.withdrawCollateral(0)).to.be.revertedWithCustomError(ProdigiKill, "Err__Not__Rejected");
+    });
+  });
+
+  describe("Withdrawals reward", async () => {
+    it("withdraw reward", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 4);
+      await expect(ProdigiKill.withdrawReward(0)).to.be.ok;
+    });
+    it("withdraw reward on status not equal to completed", async function () {
+      await ProdigiKill.taskApply(title, details, noOfDays, {
+        value: parseEther("0.5"),
+      });
+      await ProdigiKill.applicationBulkStatusChange([0], 1);
+      await expect(ProdigiKill.withdrawReward(0)).to.be.revertedWithCustomError(ProdigiKill, "Err__Not__Completed");
+    });
+  });
+
+  describe("Propose Idea", async () => {
+    it("propose idea with black listed", async function () {
+      const [owner] = await ethers.getSigners();
+      await ProdigiKill.addToBlackList(owner.address);
+      await expect(ProdigiKill.proposeIdea(title, details)).to.be.revertedWith("Sorry you are black listed");
+    });
+
+    it("propose idea without black listed account", async function () {
+      const [owner] = await ethers.getSigners();
+      await expect(await ProdigiKill.proposeIdea(title, details)).to.be.ok;
+      const [ideaId, userAddress, proposedTitle] = await ProdigiKill.getIdeaById(0);
+      await expect(ideaId).equal(0);
+      await expect(userAddress).equal(owner.address);
+      await expect(proposedTitle).equal(title);
+    });
+  });
+
+  describe("Propose Idea Rating", async () => {
+    it("propose idea rate", async function () {
+      await ProdigiKill.proposeIdea(title, details);
+      await expect(ProdigiKill.rateProposedIdea(0)).to.be.ok;
+    });
+  });
+
+  describe("Winner of idea", async () => {
+    it("idea winner", async function () {
+      await ProdigiKill.donation({ value: parseEther("0.5") });
+      await ProdigiKill.proposeIdea(title, details);
+      const [owner] = await ethers.getSigners();
+      const contactAddress = await ProdigiKill.getAddress();
+      const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
+      const txResult = await ProdigiKill.winnerOfIdea(0);
+      expect(txResult).to.be.ok;
+      const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const afterEthAmountAccount = await ethers.provider.getBalance(owner);
+      const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
+      const gasCost = txResult.gasPrice * receipt.gasUsed!;
+      expect(afterEthAmountInContract).equal(beforeEthAmountInContract - parseEther("0.1"));
+      expect(afterEthAmountAccount).equal(beforeEthAmountAccount - gasCost + parseEther("0.1"));
+    });
+  });
+
+  describe("withdraw Running Fees", async () => {
+    it("running fee's withdraw before date", async function () {
+      await ProdigiKill.donation({ value: parseEther("1") });
+
+      await expect(ProdigiKill.withdrawRunningFees()).to.be.revertedWithCustomError(
+        ProdigiKill,
+        "Err__Time__is__not_UP",
+      );
+    });
+
+    // try after commenting constructor (+ 30 days)
+    it("running fee's", async function () {
+      await ProdigiKill.donation({ value: parseEther("1") });
+      const [owner] = await ethers.getSigners();
+      const contactAddress = await ProdigiKill.getAddress();
+      const beforeEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const beforeEthAmountAccount = await ethers.provider.getBalance(owner);
+      const txResult = await ProdigiKill.withdrawRunningFees();
+      expect(txResult).to.be.ok;
+      const afterEthAmountInContract = await ethers.provider.getBalance(contactAddress);
+      const afterEthAmountAccount = await ethers.provider.getBalance(owner);
+      const receipt: TransactionReceipt = (await ethers.provider.getTransactionReceipt(txResult.hash))!;
+      const gasCost = txResult.gasPrice * receipt.gasUsed!;
+      expect(afterEthAmountInContract).equal(beforeEthAmountInContract - (2n * beforeEthAmountInContract) / 100n);
+      expect(afterEthAmountAccount).equal(beforeEthAmountAccount - gasCost + (2n * beforeEthAmountInContract) / 100n);
     });
   });
 });

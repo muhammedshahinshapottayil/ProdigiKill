@@ -27,17 +27,6 @@ const deployedContracts = {
               type: "uint256",
             },
           ],
-          name: "Err__Not__Accepted",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "id",
-              type: "uint256",
-            },
-          ],
           name: "Err__Not__Completed",
           type: "error",
         },
@@ -55,17 +44,6 @@ const deployedContracts = {
         {
           inputs: [],
           name: "Err__Renew",
-          type: "error",
-        },
-        {
-          inputs: [
-            {
-              internalType: "uint256",
-              name: "id",
-              type: "uint256",
-            },
-          ],
-          name: "Err__Renew__Acceptance",
           type: "error",
         },
         {

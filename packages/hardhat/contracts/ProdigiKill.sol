@@ -311,13 +311,11 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		string memory title,
 		string memory details
 	) public isBlackListed {
-		s_ideas[s_ideaId] = Ideas({
-			ideaId: s_ideaId,
-			userAddress: msg.sender,
-			title: title
-		});
+		s_ideas.push(
+			Ideas({ ideaId: s_ideaId, userAddress: msg.sender, title: title })
+		);
 		emit Evt__Proposal__Idea(s_ideaId, msg.sender, title, details);
-		s_ideaId += 1;
+		s_ideaId = s_ideaId + 1;
 	}
 
 	function rateProposedIdea(uint256 id) public isBlackListed {
@@ -347,7 +345,7 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 		if (s_feeDetails.next > block.timestamp) revert Err__Time__is__not_UP();
 		uint256 amount = (2 * address(this).balance) / 100;
 		s_feeDetails = FeeDetails({
-			next: block.timestamp + 30,
+			next: block.timestamp + 30 days,
 			lastMonthAmount: amount
 		});
 		(bool success, ) = payable(address(owner())).call{ value: amount }("");
