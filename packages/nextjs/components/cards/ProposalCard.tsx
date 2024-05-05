@@ -159,6 +159,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         </div>
       </CustomModal>
     );
+  console.log(renewRequest.length);
 
   return (
     <div

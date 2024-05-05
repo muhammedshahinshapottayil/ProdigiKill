@@ -66,7 +66,7 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
     finalDate
     details
     createdAt
-    renewRequest(where: {status: 0}){
+    renewRequest{
       userAddress
       reason
       date
@@ -78,7 +78,7 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
         status
       }
     }
-    submitProof(where: {status: 0}){
+    submitProof{
       proof
       createdAt
       submitRating(where: {status: true}){
