@@ -73,8 +73,9 @@ const HomePage: React.FC = () => {
   const currentDate = Math.floor(Date.now() / 1000);
 
   const date = new Date();
-  const endDate = new Date(date.setDate(1));
-  const startDate = getUnixTime(endDate.setMonth(endDate.getMonth() - 1));
+  const monthStart = new Date(date.setDate(1));
+  const endDate = getUnixTime(new Date(date.setDate(1)));
+  const startDate = getUnixTime(monthStart.setMonth(monthStart.getMonth() - 1));
 
   const { data: monthlyWinner } = useQuery(gql(IDEA_WINNER_GRAPHQL), {
     variables: { startDate, endDate },

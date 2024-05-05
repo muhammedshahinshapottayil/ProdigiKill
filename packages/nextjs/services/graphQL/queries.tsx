@@ -360,7 +360,7 @@ query MyQuery($currentDate: BigInt!) {
 
 const ADMIN_DASHBOARD_COUNT = `
 query MyQuery($currentDate: BigInt!) {
-  pending: proposals(where: {status: 1, finalDate_gt: $currentDate}) {
+  pending: proposals(where: {status: 0, finalDate_gt: $currentDate}) {
     id
   }
   accepted: proposals(where: {status: 1, finalDate_gt: $currentDate}) {
