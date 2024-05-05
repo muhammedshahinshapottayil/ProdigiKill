@@ -57,7 +57,6 @@ const HomePage: React.FC = () => {
     }
     return [];
   }, [proposalData, loading, address, status, IsLoading]);
-  console.log(data);
 
   return IsLoading ? (
     <Spinner />
