@@ -12,11 +12,12 @@ import { getID } from "~~/utils";
 
 const IdeaCard: React.FC<IdeaCardProps> = ({
   winner,
-  userAddress,
+  address,
   title,
   details,
   createdAt,
   id,
+  currentAddress,
   userRatingStatus = [],
   rating = [],
 }) => {
@@ -74,9 +75,7 @@ const IdeaCard: React.FC<IdeaCardProps> = ({
       }`}
     >
       <div>
-        <span>
-          <Address address={userAddress} />
-        </span>
+        <Address address={address.toLowerCase()} />
         <div className="flex justify-between items-center mt-1 mb-4">
           <h3 className="text-lg font-bold">{title}</h3>
           <span
@@ -100,7 +99,9 @@ const IdeaCard: React.FC<IdeaCardProps> = ({
           <BsCalendarCheck />
           <span>{formattedCreatedAt.toString()}</span>
         </div>
-        <LikeButton handleLike={handleLike} isLiked={isLiked} />
+        {currentAddress.toLowerCase() !== address.toLowerCase() && (
+          <LikeButton handleLike={handleLike} isLiked={isLiked} />
+        )}
       </div>
     </div>
   );

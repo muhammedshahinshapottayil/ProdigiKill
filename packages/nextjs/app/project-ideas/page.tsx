@@ -62,13 +62,14 @@ const HomePage: React.FC = () => {
                   <IdeaCard
                     id={item.id}
                     winner={item.winner}
-                    userAddress={item.userAddress}
+                    address={item.address}
                     title={item.title}
                     details={item.details}
                     createdAt={item.createdAt}
                     rating={item?.rating}
                     userRatingStatus={item?.userRatingStatus}
                     key={item.id}
+                    currentAddress={address ?? ""}
                   />
                 ))}
             </div>

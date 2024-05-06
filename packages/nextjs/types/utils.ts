@@ -34,13 +34,14 @@ export interface ProposalCardProps {
 
 export interface IdeaCardProps {
   id: string;
-  userAddress: string;
+  address: string;
   title: string;
   details: string;
   winner: boolean;
   createdAt: number;
   rating: Rating[];
   userRatingStatus: ProposalRating[];
+  currentAddress: string;
 }
 
 type ProposalRating = {

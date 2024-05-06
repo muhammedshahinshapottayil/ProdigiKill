@@ -11,14 +11,15 @@ function AdminWrapper({
   isAdmin: boolean;
   children: React.ReactNode;
 }) {
-  if (!isAdmin) return children;
-
-  if (isAdmin && !address) {
+  if (!address)
     return (
       <div className="flex justify-center items-center h-screen">
         <h1 className="font-bold text-center">Connect your wallet</h1>
       </div>
     );
+
+  if (!isAdmin) {
+    return children;
   }
 
   if (isAdmin && !ownerAddress) {
