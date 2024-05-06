@@ -299,7 +299,7 @@ contract ProdigiKill is Ownable, ReentrancyGuard {
 	function rejectRenewApplication(
 		uint256 id
 	) public onlyOwner isAccepted(id) {
-		emit Evt__Renew__Rejected(id, Status.Accepted);
+		emit Evt__Renew__Rejected(id, Status.Rejected);
 	}
 
 	function addToBlackList(address addr) public onlyOwner {
