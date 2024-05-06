@@ -15,6 +15,7 @@ function RenewCard({
   userLiked = [],
   currentUser,
   id,
+  status,
 }: RenewRequest & { currentUser: string; id: string }) {
   const [isLiked, setIsLiked] = useState<boolean>(userLiked.length > 0);
   const [noOfLikes, setNoOfLikes] = useState<number>(renewalRating.length);
@@ -70,7 +71,7 @@ function RenewCard({
             <BsCalendarCheck />
             <span>{formattedFinalDate.toString()}</span>
           </div>
-          {currentUser.toLowerCase() !== userAddress.toLowerCase() ? (
+          {currentUser.toLowerCase() !== userAddress.toLowerCase() && status === 0 ? (
             <LikeButton handleLike={handleLike} isLiked={isLiked} />
           ) : (
             ""

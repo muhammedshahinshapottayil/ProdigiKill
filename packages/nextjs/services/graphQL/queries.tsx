@@ -66,9 +66,13 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
     finalDate
     details
     createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
     renewRequest{
       userAddress
       reason
+      status
       date
       createdAt
       userLiked:renewalRating(where: {userAddress:$address,status: true}){
@@ -79,6 +83,7 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
       }
     }
     submitProof{
+      status
       proof
       createdAt
       submitRating(where: {status: true}){
@@ -137,9 +142,13 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
     finalDate
     details
     createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
     renewRequest{
       userAddress
       reason
+      status
       date
       createdAt
       userLiked:renewalRating(where: {userAddress:$address,status: true}){
@@ -150,6 +159,7 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
       }
     }
     submitProof{
+      status
       proof
       createdAt
       submitRating(where: {status: true}){
@@ -225,9 +235,13 @@ query MyQuery($currentDate: BigInt!,$status:Int!) {
     finalDate
     details
     createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
     renewRequest{
       userAddress
       reason
+      status
       date
       createdAt
       renewalRating(where: {status: true}){
@@ -235,6 +249,7 @@ query MyQuery($currentDate: BigInt!,$status:Int!) {
       }
     }
     submitProof{
+      status
       proof
       createdAt
       submitRating(where: {status: true}){
@@ -284,16 +299,21 @@ query MyQuery($status:Int!) {
     finalDate
     details
     createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
     renewRequest{
       userAddress
       reason
       date
+      status
       createdAt
       renewalRating(where: {status: true}){
         status
       }
     }
     submitProof{
+      status
       proof
       createdAt
       submitRating(where: {status: true}){

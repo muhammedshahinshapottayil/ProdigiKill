@@ -492,7 +492,7 @@ const PROPOSAL_SUBMITTED_APPROVE_PENDING_COLUMNS = [
       const { id } = row.values;
       return (
         <div className="flex justify-around">
-          <AcceptButton status={1} id={id} />
+          <AcceptButton status={4} id={id} />
           <RejectButton id={id} />
         </div>
       );

@@ -66,6 +66,7 @@ export interface RenewRequest {
   createdAt: number;
   renewalRating: Rating[];
   userLiked: Rating[];
+  status: number;
 }
 
 interface Rating {

@@ -206,7 +206,17 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
         renewRequest.length > 0 ? (
           <CustomModal
             clickElement={
-              <span className="px-2 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 cursor-pointer hover:bg-green-300  ">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-semibold cursor-pointer ${
+                  renewRequest[0].status === 1
+                    ? " bg-green-100 text-green-800  hover:bg-green-300"
+                    : renewRequest[0].status === 0
+                    ? "bg-blue-100 text-blue-800  hover:bg-blue-300"
+                    : renewRequest[0].status === 2
+                    ? "bg-red-100 text-red-800  hover:bg-red-300"
+                    : ""
+                }`}
+              >
                 Renewal Applied
               </span>
             }
@@ -216,6 +226,7 @@ const ProposalCard: React.FC<ProposalCardProps> = ({
               currentUser={currentAddress}
               date={renewRequest[0].date}
               id={id}
+              status={renewRequest[0].status}
               reason={renewRequest[0].reason}
               renewalRating={renewRequest[0].renewalRating}
               userAddress={userAddress}
