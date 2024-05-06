@@ -1,5 +1,4 @@
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
-import { notification } from "~~/utils/scaffold-eth";
 
 function AcceptButton({ ids, status }: { ids: bigint[]; status: number }) {
   const { writeAsync: applicationBulkStatusChange } = useScaffoldContractWrite({
@@ -9,7 +8,6 @@ function AcceptButton({ ids, status }: { ids: bigint[]; status: number }) {
     blockConfirmations: 1,
     onBlockConfirmation: txnReceipt => {
       console.log("Transaction blockHash", txnReceipt.blockHash);
-      notification.success("yes its true try it");
     },
   });
 

@@ -304,7 +304,7 @@ const HomePage: React.FC = () => {
             )}
             {status === Status.Pending &&
             (IsRenewORSubmitted === null || IsRenewORSubmitted === RenewOrSubmitted.Submitted) ? (
-              <BulkRejectButton ids={Ids} />
+              <BulkRejectButton status={IsRenewORSubmitted === RenewOrSubmitted.Submitted ? 3 : 2} ids={Ids} />
             ) : (
               ""
             )}

@@ -27,7 +27,35 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int) {
 }
 `;
 
-const PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL = `
+const PROPOSAL_INCOMPLETE_GRAPHQL = `
+query MyQuery($currentDate: BigInt!,$status:Int) {
+  proposals(
+    where: {
+      or: [
+        { finalDate_lt: $currentDate, status: 1, withdrawal: false }
+        { status: $status }
+      ]
+    }
+    orderBy: updatedAt
+    orderDirection: desc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    rating: proposalRating(where: { status: true }) {
+      status
+    }
+  }
+}`;
+
+const PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL = `
 query MyQuery($status:Int!) {
   proposals(where: {status:$status}
     orderBy: updatedAt
@@ -173,7 +201,35 @@ query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
 }
 `;
 
-const USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL = `
+const USER_PROPOSAL_INCOMPLETE_GRAPHQL = `
+query MyQuery($address: String!, $currentDate: BigInt!,$status:Int!) {
+  proposals( where: {
+    or: [
+      { finalDate_lt: $currentDate, status: 1, withdrawal: false,userAddress:$address }
+      { status: $status,userAddress:$address }
+    ]
+  }
+    orderBy: updatedAt
+    orderDirection: desc
+  ) {
+    withdrawal
+    userAddress
+    updatedAt
+    transactionHash
+    title
+    status
+    id
+    finalDate
+    details
+    createdAt
+    rating: proposalRating (where: {status: true}) {
+      status
+    }
+  }
+}
+`;
+
+const USER_PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL = `
 query MyQuery($status:Int!,$address: String!) {
   proposals(where: {status:$status,userAddress:$address}
     orderBy: updatedAt
@@ -453,10 +509,11 @@ query MyQuery($startDate: BigInt!,$endDate: BigInt!) {
 export {
   PROPOSAL_PENDING_GRAPHQL,
   PROPOSAL_ACCEPTED_GRAPHQL,
-  PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL,
   USER_PROPOSAL_PENDING_GRAPHQL,
   USER_PROPOSAL_ACCEPTED_GRAPHQL,
-  USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  USER_PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL,
+  USER_PROPOSAL_INCOMPLETE_GRAPHQL,
   ADMIN_PROPOSAL_PENDING_GRAPHQL,
   ADMIN_PROPOSAL_ACCEPTED,
   ADMIN_PROPOSAL_REJECT,
@@ -469,4 +526,5 @@ export {
   IDEA_WINNER_GRAPHQL,
   PROPOSED_IDEAS_LAST_WINNER_GRAPHQL,
   PROPOSED_IDEAS_FILTER_WINNER_GRAPHQL,
+  PROPOSAL_INCOMPLETE_GRAPHQL,
 };

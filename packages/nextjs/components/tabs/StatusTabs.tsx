@@ -94,7 +94,7 @@ function StatusTabs({
             status === Status.INCompleted ? "bg-yellow-500 hover:bg-yellow-600" : "bg-gray-700 hover:bg-gray-600"
           }`}
         >
-          Overdue
+          In Completed
         </button>
         <button
           onClick={() => handleStatusChange(Status.Completed)}

@@ -8,11 +8,13 @@ import { ProposalCard } from "~~/components/cards";
 import { StatusTabs } from "~~/components/tabs";
 import {
   PROPOSAL_ACCEPTED_GRAPHQL,
+  PROPOSAL_INCOMPLETE_GRAPHQL,
   PROPOSAL_PENDING_GRAPHQL,
-  PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL,
   USER_PROPOSAL_ACCEPTED_GRAPHQL,
+  USER_PROPOSAL_INCOMPLETE_GRAPHQL,
   USER_PROPOSAL_PENDING_GRAPHQL,
-  USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL,
+  USER_PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL,
 } from "~~/services/graphQL/queries";
 import { Proposal, Status } from "~~/types/utils";
 
@@ -29,16 +31,20 @@ const HomePage: React.FC = () => {
         ? PROPOSAL_PENDING_GRAPHQL
         : status === Status.Accepted
         ? PROPOSAL_ACCEPTED_GRAPHQL
-        : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
-        ? PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+        : status === Status.INCompleted
+        ? PROPOSAL_INCOMPLETE_GRAPHQL
+        : status === Status.Rejected || status === Status.Completed
+        ? PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL
         : ""
       : toggle
       ? status === Status.Pending
         ? USER_PROPOSAL_PENDING_GRAPHQL
         : status === Status.Accepted
         ? USER_PROPOSAL_ACCEPTED_GRAPHQL
-        : status === Status.Rejected || status === Status.INCompleted || status === Status.Completed
-        ? USER_PROPOSAL_REJECT_OR_INCOMPLETE_OR_COMPLETED_GRAPHQL
+        : status === Status.INCompleted
+        ? USER_PROPOSAL_INCOMPLETE_GRAPHQL
+        : status === Status.Rejected || status === Status.Completed
+        ? USER_PROPOSAL_REJECT_OR_COMPLETED_GRAPHQL
         : ""
       : "",
   );

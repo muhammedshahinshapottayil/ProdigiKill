@@ -1,11 +1,11 @@
 import { useScaffoldContractWrite } from "~~/hooks/scaffold-eth";
 import { getID } from "~~/utils";
 
-function RejectButton({ id }: { id: string }) {
+function RejectButton({ id, status }: { id: string; status: number }) {
   const { writeAsync: applicationBulkStatusChange } = useScaffoldContractWrite({
     contractName: "ProdigiKill",
     functionName: "applicationBulkStatusChange",
-    args: [[getID(id)], 2],
+    args: [[getID(id)], status],
     blockConfirmations: 1,
     onBlockConfirmation: txnReceipt => {
       console.log("Transaction blockHash", txnReceipt.blockHash);
