@@ -6,6 +6,10 @@
 
 This project received grants from [BuidlGuidl](https://buidlguidl.com/). If you haven't heard about BuidlGuidl, it's a vibrant curated group of Ethereum builders creating products, prototypes, and tutorials to enrich the web3 ecosystem.
 
+### Working Demo Video
+
+[click here to view the working demo video](https://www.youtube.com/watch?v=b53b4dTBJNw&t=3s)
+
 ### Overview
 
 The Procrastination Combat Platform is a decentralized application (DApp) built to help users overcome procrastination by leveraging pressure and incentives. It allows users to set deadlines for their tasks, provide collateral as commitment, earn rewards for timely completion, and face consequences for failure. Additionally, the platform fosters creativity and collaboration by providing a space for idea-sharing and rewarding the best ideas monthly.
