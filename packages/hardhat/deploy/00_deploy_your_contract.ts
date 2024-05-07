@@ -1,6 +1,5 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
-import { Contract } from "ethers";
 
 /**
  * Deploys a contract named "YourContract" using the deployer account and
@@ -33,11 +32,11 @@ const deployYourContract: DeployFunction = async function (hre: HardhatRuntimeEn
   });
 
   // Get the deployed contract to interact with it after deploying.
-  const yourContract = await hre.ethers.getContract<Contract>("ProdigiKill", deployer);
-  console.log(
-    "👋 Initial greeting:",
-    await yourContract.transferOwnership("0x8131b052A1E8dB38Fbc3891e15b84C147C4D3F19"),
-  );
+  // const yourContract = await hre.ethers.getContract<Contract>("ProdigiKill", deployer);
+  // console.log(
+  //   "👋 Initial greeting:",
+  //   await yourContract.transferOwnership("0x8131b052A1E8dB38Fbc3891e15b84C147C4D3F19"),
+  // );
 };
 
 export default deployYourContract;

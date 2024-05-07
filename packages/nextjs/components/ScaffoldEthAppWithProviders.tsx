@@ -22,7 +22,9 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   const setNativeCurrencyPrice = useGlobalState(state => state.setNativeCurrencyPrice);
 
   const { address } = useAccount();
-  const isAdmin = usePathname().split("/")[1] === "admin";
+  const path = usePathname();
+  const isAdmin = path.split("/")[1] === "admin";
+  const isRoot = path.split("/")[1] === "";
 
   const { data: ownerAddress } = useScaffoldContractRead({
     contractName: "ProdigiKill",
@@ -40,7 +42,7 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
       <div className="flex flex-col min-h-screen">
         {isAdmin && ownerAddress && address && ownerAddress === address ? <AdminHeader /> : <Header />}
         <main className="relative flex flex-col flex-1">
-          <AdminWrapper address={address} isAdmin={isAdmin} ownerAddress={ownerAddress}>
+          <AdminWrapper isRoot={isRoot} address={address} isAdmin={isAdmin} ownerAddress={ownerAddress}>
             {children}
           </AdminWrapper>
         </main>
@@ -60,7 +62,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
   //   setMounted(true);
   // }, []);
 
-  const subgraphUri = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
+  const subgraphUri = "https://api.studio.thegraph.com/query/64449/prodigikill/version/latest";
   const apolloClient = new ApolloClient({
     uri: subgraphUri,
     cache: new InMemoryCache(),
@@ -73,7 +75,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
         <RainbowKitProvider
           chains={appChains.chains}
           avatar={BlockieAvatar}
-          // theme={mounted ? (isDarkMode ? darkTheme() : lightTheme()) : lightTheme()}
+          // theme={darkTheme()}
         >
           <ScaffoldEthApp>{children}</ScaffoldEthApp>
         </RainbowKitProvider>

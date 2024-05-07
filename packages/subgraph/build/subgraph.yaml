@@ -2,7 +2,7 @@ specVersion: 0.0.4
 description: ProdigiKill
 repository: https://github.com/scaffold-eth/se-2/packages/subgraph/
 schema:
-  file: ./src/schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: ProdigiKill
@@ -29,7 +29,7 @@ dataSources:
         - Winner
       abis:
         - name: ProdigiKill
-          file: ./abis/localhost_ProdigiKill.json
+          file: ProdigiKill\abis\localhost_ProdigiKill.json
       eventHandlers:
         - event: Evt__Applied(indexed uint256,indexed address,string,string,uint256,uint8)
           handler: handleProposalCreate
@@ -63,4 +63,4 @@ dataSources:
           handler: handleProposeIdeaRating
         - event: Evt__Winner__of__Idea(indexed uint256,indexed address)
           handler: handleProposalWinner
-      file: ./src/mapping.ts
+      file: ProdigiKill\ProdigiKill.wasm

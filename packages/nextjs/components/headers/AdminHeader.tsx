@@ -36,7 +36,7 @@ export const HeaderMenuLinks = () => {
               } hover:bg-secondary hover:shadow-md focus:!bg-secondary active:!text-neutral py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col`}
             >
               {icon}
-              <span>{label}</span>
+              <span className="font-semibold">{label}</span>
             </Link>
           </li>
         );

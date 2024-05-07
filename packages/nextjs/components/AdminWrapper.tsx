@@ -5,12 +5,16 @@ function AdminWrapper({
   children,
   isAdmin,
   ownerAddress,
+  isRoot,
 }: {
   address: string | undefined;
   ownerAddress: string | undefined;
   isAdmin: boolean;
   children: React.ReactNode;
+  isRoot: boolean;
 }) {
+  if (isRoot) return children;
+
   if (!address)
     return (
       <div className="flex justify-center items-center h-screen">
