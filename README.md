@@ -8,7 +8,7 @@ This project received grants from [BuidlGuidl](https://buidlguidl.com/). If you 
 
 ### Working Demo Video
 
-[click here to view the working demo video](https://www.youtube.com/watch?v=b53b4dTBJNw&t=3s)
+[Click on this to view the working demo video](https://www.youtube.com/watch?v=b53b4dTBJNw&t=3s)
 
 ### Overview
 
